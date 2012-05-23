@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 /**
  *
@@ -92,7 +93,7 @@ public class VelhaInterface extends JFrame{
 
         profundidadeMaxima = new JTextField();
         profundidadeMaxima.setText("5");//default
-        profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
+        //profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
 
         listaAlgoritmos = new JComboBox();
         listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB"}));
@@ -197,14 +198,33 @@ public class VelhaInterface extends JFrame{
     }
 
 
-
-
   public static void main(String[] args) {
+  selecionarInterface(0);
   JFrame frame = new VelhaInterface();
   frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE );
-  frame.pack();
-  frame.setResizable(false);
+  frame.pack(); //ajusta o tamanho da janela ao dos componentes
+  frame.setResizable(false);//nao deixa o usuario aumentar o tamanho da tela
   frame.setLocationRelativeTo( null );
-  frame.setVisible(true);
+  frame.setVisible(true);//torna visivel a interface
  }
+
+      /**
+     * Seleciona o padrão de visualização da interface GUI
+     * @param tipo um inteiro GTK,METAL,MOTIF,WINDOWS, WINDOWS_CLASSIC,MAC
+     */
+    public static void selecionarInterface( int tipo ) {
+        String[] newLookAndFeel = {
+        "com.sun.java.swing.plaf.gtk.GTKLookAndFeel",
+        "javax.swing.plaf.metal.MetalLookAndFeel",
+        "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
+        "com.sun.java.swing.plaf.motif.MotifLookAndFeel",
+        "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel",
+        "javax.swing.plaf.mac.MacLookAndFeel"};
+
+        tipo = tipo < 0 || tipo > 5 ? 5 : tipo;
+
+        try {
+            UIManager.setLookAndFeel( newLookAndFeel[ tipo ] );
+        } catch (Exception e) { System.err.println("TIPO: "+newLookAndFeel[ tipo ]+" NAO INSTALADO, MUDE O TIPO DA INTERFACE");}
+    }
 }
