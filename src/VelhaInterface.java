@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 
 /**
  *
@@ -25,7 +24,7 @@ import javax.swing.UIManager;
 
 
 public class VelhaInterface extends JFrame{
-    private enum heuristica{MinMaX, CorteAB;}
+    private enum heuristica{MinMax, CorteAB,Random;}
     private String tipoBusca ="MinMax";//default
     private JComboBox listaAlgoritmos;//para colocar os algoritmos
     private JButton[] botoes;//contem os botoes da matriz 3x3 do jogo
@@ -38,13 +37,17 @@ public class VelhaInterface extends JFrame{
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
     private Velha jogoDaVelha;
     private long tempo;//armazena tempo que demorou para calcular em segundos
+    private Jogador jogador1,jogador2,jogadorAtual;
     JSplitPane split;
     private String imagem = "/home/pargles/NetBeansProjects/white.png";
 
   //metodo construtor
   public VelhaInterface()
   {
-      jogoDaVelha = new Velha(new Jogador('X',"VC"),new Jogador('O',"PC"));//default vcXpc
+      jogador1 = new Jogador('X',"VC");
+      jogador2 = new Jogador('O',"PC");
+      jogadorAtual = jogador1;
+      jogoDaVelha = new Velha(jogador1,jogador2);//default vcXpc
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
       painelJogadas = new JPanel();
@@ -110,7 +113,7 @@ public class VelhaInterface extends JFrame{
         //profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
 
         listaAlgoritmos = new JComboBox();
-        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB"}));
+        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB","Random"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
 
         pcXvc = new JRadioButton("PC X EU");
@@ -175,6 +178,7 @@ public class VelhaInterface extends JFrame{
      */
     public void processarJogada(JButton botaoClicado)
     {
+        jogadorAtual = jogador1;
         IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
         if(!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado))
         {
@@ -182,12 +186,38 @@ public class VelhaInterface extends JFrame{
         }
         else
         {
-            botaoClicado.setText("X");
+            botaoClicado.setText(""+jogadorAtual.getSimbolo());
             jogoDaVelha.computarJogadaPessoa(IDbotaoClicado);
-            botoes[jogoDaVelha.fazerJogadaPC()].setText(""+jogoDaVelha.jogador2.getSimbolo());
-
+            if(!vcXele.isSelected())//unica configuracao que o PC nao joga
+            {
+                botoes[jogoDaVelha.fazerJogadaPC(jogador2,tipoBusca)].setText(""+jogoDaVelha.jogador2.getSimbolo());
+            }
         }
+    }
 
+    /* Metodo que inicia a partida pcxpc e vai printando
+     * na tela as posicoes selecionadas por ambos
+     * @param void
+     * @return void
+     */
+    public void computadorXcomputador() {
+
+        while (true) {
+            jogadorAtual = jogador1;
+            int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
+            botoes[jogada].setText("" + jogoDaVelha.jogador1.getSimbolo());
+            if(jogoDaVelha.existeVencedor())
+            {
+                JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
+            }
+            jogadorAtual = jogador2;
+            jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
+            botoes[jogada].setText("" + jogoDaVelha.jogador2.getSimbolo());
+            if(jogoDaVelha.existeVencedor())
+            {
+                JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
+            }
+        }
     }
 
     /* classe que contem evento que cuida dos botoes do radioButton
@@ -198,25 +228,25 @@ public class VelhaInterface extends JFrame{
     public class tipoDoJogo implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            listaAlgoritmos.setEnabled(true);
+            profundidadeMaxima.setEnabled(true);
             if (pcXvc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"PC"));
-                jogoDaVelha.setJogador2(new Jogador('O',"VC"));
-                listaAlgoritmos.setEnabled(true);
+                jogoDaVelha.setJogador2(new Jogador('O',"VC"));             
             }
             if (vcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
                 jogoDaVelha.setJogador2(new Jogador('O',"PC"));
-                listaAlgoritmos.setEnabled(true);
             }
             if (pcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"PC1"));
                 jogoDaVelha.setJogador2(new Jogador('O',"PC2"));
-                listaAlgoritmos.setEnabled(true);
             }
             if (vcXele.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
                 jogoDaVelha.setJogador2(new Jogador('O',"ELE"));
                 listaAlgoritmos.setEnabled(false);
+                profundidadeMaxima.setEnabled(false);
             }
 
         }
@@ -230,8 +260,22 @@ public class VelhaInterface extends JFrame{
 
         public void actionPerformed(ActionEvent e) {
             iniciar.setEnabled(false);
+            pcXvc.setEnabled(false);
+            vcXpc.setEnabled(false);
+            pcXpc.setEnabled(false);
+            vcXele.setEnabled(false);
+            listaAlgoritmos.setEnabled(false);
             limparBotoes();
             long tempoInicio = System.currentTimeMillis();
+            if(pcXvc.isSelected())
+            {
+                botoes[jogoDaVelha.fazerJogadaPC(jogador2,tipoBusca)].setText(""+jogoDaVelha.jogador2.getSimbolo());
+                jogadorAtual = jogador2;//pc ja jogou e a vez do jogador2
+            }
+            if(pcXpc.isSelected())
+            {
+                //computadorXcomputador();
+            }
             
             tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
 
@@ -252,36 +296,5 @@ public class VelhaInterface extends JFrame{
                 profundidadeMaxima.setEnabled(true);
             }
         }
-    }
-
-
-  public static void main(String[] args) {
-  selecionarInterface(0);
-  JFrame frame = new VelhaInterface();
-  frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE );
-  frame.pack(); //ajusta o tamanho da janela ao dos componentes
-  frame.setResizable(false);//nao deixa o usuario aumentar o tamanho da tela
-  frame.setLocationRelativeTo( null );
-  frame.setVisible(true);//torna visivel a interface
- }
-
-      /**
-     * Seleciona o padrão de visualização da interface GUI
-     * @param tipo um inteiro GTK,METAL,MOTIF,WINDOWS, WINDOWS_CLASSIC,MAC
-     */
-    public static void selecionarInterface( int tipo ) {
-        String[] newLookAndFeel = {
-        "com.sun.java.swing.plaf.gtk.GTKLookAndFeel",
-        "javax.swing.plaf.metal.MetalLookAndFeel",
-        "com.sun.java.swing.plaf.windows.WindowsLookAndFeel",
-        "com.sun.java.swing.plaf.motif.MotifLookAndFeel",
-        "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel",
-        "javax.swing.plaf.mac.MacLookAndFeel"};
-
-        tipo = tipo < 0 || tipo > 5 ? 5 : tipo;
-
-        try {
-            UIManager.setLookAndFeel( newLookAndFeel[ tipo ] );
-        } catch (Exception e) { System.err.println("TIPO: "+newLookAndFeel[ tipo ]+" NAO INSTALADO, MUDE O TIPO DA INTERFACE");}
     }
 }

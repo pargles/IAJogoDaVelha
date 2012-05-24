@@ -7,8 +7,8 @@ public class Jogador {
     private String nomeDoJogador;
     private char simbolo;//simbolo do jogador
     private Randomico random;
-    //MinMax minMax;
-    //AlfaBeta corteAB;
+    //private MinMax minMax;
+    //private AlfaBeta corteAB;
 
     public Jogador(char simbolo,String nome)
     {
