@@ -20,7 +20,7 @@ import javax.swing.UIManager;
 /**
  *
  * @author pargles
- * @version 3.0
+ * @version 4.0
  */
 
 
@@ -30,7 +30,7 @@ public class VelhaInterface extends JFrame{
     private JComboBox listaAlgoritmos;//para colocar os algoritmos
     private JButton[] botoes;//contem os botoes da matriz 3x3 do jogo
     private JButton iniciar;
-    private JRadioButton pcXeu, euXpc,pcXpc,euXvc;
+    private JRadioButton pcXvc, vcXpc,pcXpc,vcXele;
     private ButtonGroup group;//junta todos os radio buttons, pcxeu, euxpc ...
     private JPanel painelJogadas,painelConfiguracoes;
     private JTextField profundidadeMaxima;
@@ -44,7 +44,7 @@ public class VelhaInterface extends JFrame{
   //metodo construtor
   public VelhaInterface()
   {
-      jogoDaVelha = new Velha(new Jogador('X'),new JogadorPC('O'));//default euXpc
+      jogoDaVelha = new Velha(new Jogador('X',"VC"),new Jogador('O',"PC"));//default vcXpc
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
       painelJogadas = new JPanel();
@@ -113,33 +113,33 @@ public class VelhaInterface extends JFrame{
         listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
 
-        pcXeu = new JRadioButton("PC X EU");
-        pcXeu.setFocusable(false);
-        pcXeu.addActionListener(new tipoDoJogo());
+        pcXvc = new JRadioButton("PC X EU");
+        pcXvc.setFocusable(false);
+        pcXvc.addActionListener(new tipoDoJogo());
 
-        euXpc = new JRadioButton("EU X PC");
-        euXpc.setSelected(true);//default
-        euXpc.setFocusable(false);
-        euXpc.addActionListener(new tipoDoJogo());
+        vcXpc = new JRadioButton("EU X PC");
+        vcXpc.setSelected(true);//default
+        vcXpc.setFocusable(false);
+        vcXpc.addActionListener(new tipoDoJogo());
 
         pcXpc = new JRadioButton("PC X PC");
         pcXpc.setFocusable(false);
         pcXpc.addActionListener(new tipoDoJogo());
 
-        euXvc = new JRadioButton("EU X VC");
-        euXvc.setFocusable(false);
-        euXvc.addActionListener(new tipoDoJogo());
+        vcXele = new JRadioButton("EU X VC");
+        vcXele.setFocusable(false);
+        vcXele.addActionListener(new tipoDoJogo());
 
         group = new ButtonGroup();
-        group.add(pcXeu);
-        group.add(euXpc);
+        group.add(pcXvc);
+        group.add(vcXpc);
         group.add(pcXpc);
-        group.add(euXvc);
+        group.add(vcXele);
     
-        painelConfiguracoes.add(pcXeu);
-        painelConfiguracoes.add(euXpc);
+        painelConfiguracoes.add(pcXvc);
+        painelConfiguracoes.add(vcXpc);
         painelConfiguracoes.add(pcXpc);
-        painelConfiguracoes.add(euXvc);
+        painelConfiguracoes.add(vcXele);
         painelConfiguracoes.add(listaAlgoritmos);
         painelConfiguracoes.add(labelVazio);
         painelConfiguracoes.add(iniciar);
@@ -166,7 +166,6 @@ public class VelhaInterface extends JFrame{
             {
                 JOptionPane.showMessageDialog(null,"Posicao ja contem elemento", "Aviso", 2);
             }
-            System.out.println("o botao: "+IDbotaoClicado);
         }
     }
 
@@ -176,7 +175,7 @@ public class VelhaInterface extends JFrame{
      */
     public void processarJogada(JButton botaoClicado)
     {
-        IDbotaoClicado = Integer.parseInt(botaoClicado.getName());
+        IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
         if(!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado))
         {
             System.err.println("posicao "+IDbotaoClicado+" ja esta ocupada");
@@ -184,6 +183,9 @@ public class VelhaInterface extends JFrame{
         else
         {
             botaoClicado.setText("X");
+            jogoDaVelha.computarJogadaPessoa(IDbotaoClicado);
+            botoes[jogoDaVelha.fazerJogadaPC()].setText(""+jogoDaVelha.jogador2.getSimbolo());
+
         }
 
     }
@@ -196,24 +198,24 @@ public class VelhaInterface extends JFrame{
     public class tipoDoJogo implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            if (pcXeu.isSelected()) {
-                jogoDaVelha.setJogador1(new JogadorPC('X'));
-                jogoDaVelha.setJogador2(new Jogador('O'));
+            if (pcXvc.isSelected()) {
+                jogoDaVelha.setJogador1(new Jogador('X',"PC"));
+                jogoDaVelha.setJogador2(new Jogador('O',"VC"));
                 listaAlgoritmos.setEnabled(true);
             }
-            if (euXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X'));
-                jogoDaVelha.setJogador2(new JogadorPC('O'));
+            if (vcXpc.isSelected()) {
+                jogoDaVelha.setJogador1(new Jogador('X',"VC"));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC"));
                 listaAlgoritmos.setEnabled(true);
             }
             if (pcXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new JogadorPC('X'));
-                jogoDaVelha.setJogador2(new JogadorPC('O'));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC1"));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC2"));
                 listaAlgoritmos.setEnabled(true);
             }
-            if (euXvc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X'));
-                jogoDaVelha.setJogador2(new Jogador('O'));
+            if (vcXele.isSelected()) {
+                jogoDaVelha.setJogador1(new Jogador('X',"VC"));
+                jogoDaVelha.setJogador2(new Jogador('O',"ELE"));
                 listaAlgoritmos.setEnabled(false);
             }
 

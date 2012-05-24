@@ -1,14 +1,31 @@
 /**
  * @authors pargles and stephano
- * @version 1.0
+ * @version 2.0
  */
 public class Jogador {
 
+    private String nomeDoJogador;
     private char simbolo;//simbolo do jogador
+    private Randomico random;
+    //MinMax minMax;
+    //AlfaBeta corteAB;
 
-    public Jogador(char simbolo)
+    public Jogador(char simbolo,String nome)
     {
+        nomeDoJogador = nome;
         this.simbolo = simbolo;
+        random = new Randomico();
+    }
+
+     /* metodo que chama o algoritmo aleatorio para fazer uma
+     * jogada aleatoria, passando como referencia o tabuleiro atual
+     * e retornando a posicao em que o jogadorPC deve jogar
+     * @param Tabuleiro t
+     * @return int jogaRandomico
+     */
+    public int jogaRandomico(Tabuleiro t)
+    {
+        return random.executa(t);
     }
 
     public void setSimbolo(char simbolo)
@@ -19,6 +36,11 @@ public class Jogador {
     public char getSimbolo()
     {
         return simbolo;
+    }
+
+    public String getNome()
+    {
+        return nomeDoJogador;
     }
 
 }

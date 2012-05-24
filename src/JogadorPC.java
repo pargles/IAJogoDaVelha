@@ -11,7 +11,7 @@ public class JogadorPC extends Jogador{
     //classe que extende o jogador normal
     public JogadorPC(char simbolo)
     {
-        super(simbolo);
+        super(simbolo,"lalala");
         random = new Randomico();
     }
 
