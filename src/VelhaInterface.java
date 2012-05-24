@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSplitPane;
@@ -19,7 +20,7 @@ import javax.swing.UIManager;
 /**
  *
  * @author pargles
- * @version 2.0
+ * @version 3.0
  */
 
 
@@ -35,6 +36,7 @@ public class VelhaInterface extends JFrame{
     private JTextField profundidadeMaxima;
     private JLabel labelProfundidade,labelTempo,labelVazio;
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
+    private Velha jogoDaVelha;
     private long tempo;//armazena tempo que demorou para calcular em segundos
     JSplitPane split;
     private String imagem = "/home/pargles/NetBeansProjects/white.png";
@@ -42,6 +44,7 @@ public class VelhaInterface extends JFrame{
   //metodo construtor
   public VelhaInterface()
   {
+      jogoDaVelha = new Velha(new Jogador('X'),new JogadorPC('O'));//default euXpc
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
       painelJogadas = new JPanel();
@@ -71,11 +74,22 @@ public class VelhaInterface extends JFrame{
             botoes[i].setName(String.valueOf(i));//seta o ID do botao
             botoes[i].setBackground(Color.WHITE);
             botoes[i].setOpaque(true);//botao fica opaco
+            botoes[i].setEnabled(false);
             botoes[i].setBorder(javax.swing.BorderFactory.createEtchedBorder());//seta borda mais bonita
             botoes[i].addActionListener(new clicouMatrizDeBotoes());//coloca evento vijiando ele
             painelJogadas.add(botoes[i]);//adiciona o botao no painel das jogadas
-
         }
+    }
+
+    /* metodo que coloca todos os botoes do tabuleiro com o char vazio
+     * @param void
+     * @return void
+     */
+    public void limparBotoes() {
+        for (int i = 0; i < 9; i++) {
+            botoes[i].setEnabled(true);
+            botoes[i].setText("");
+         }
     }
 
     /* metodo que insere todos os botoes no Painel de configuracoes
@@ -101,25 +115,27 @@ public class VelhaInterface extends JFrame{
 
         pcXeu = new JRadioButton("PC X EU");
         pcXeu.setFocusable(false);
+        pcXeu.addActionListener(new tipoDoJogo());
 
         euXpc = new JRadioButton("EU X PC");
         euXpc.setSelected(true);//default
         euXpc.setFocusable(false);
+        euXpc.addActionListener(new tipoDoJogo());
 
         pcXpc = new JRadioButton("PC X PC");
         pcXpc.setFocusable(false);
+        pcXpc.addActionListener(new tipoDoJogo());
 
         euXvc = new JRadioButton("EU X VC");
         euXvc.setFocusable(false);
+        euXvc.addActionListener(new tipoDoJogo());
 
         group = new ButtonGroup();
         group.add(pcXeu);
         group.add(euXpc);
         group.add(pcXpc);
         group.add(euXvc);
-
-
-        
+    
         painelConfiguracoes.add(pcXeu);
         painelConfiguracoes.add(euXpc);
         painelConfiguracoes.add(pcXpc);
@@ -130,8 +146,6 @@ public class VelhaInterface extends JFrame{
         painelConfiguracoes.add(labelProfundidade);
         painelConfiguracoes.add(profundidadeMaxima);
         painelConfiguracoes.add(labelTempo);
-
-
     }
 
   /* classe para o evento que identifica o numero do botao clicado
@@ -144,11 +158,66 @@ public class VelhaInterface extends JFrame{
         public void actionPerformed(ActionEvent e)
         {
             JButton botaoClicado = (JButton) e.getSource();
-            IDbotaoClicado = Integer.parseInt(botaoClicado.getName());
+            if(botaoClicado.getText().equals(""))//se o campo nao estiver vazio
+            {
+                processarJogada(botaoClicado);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null,"Posicao ja contem elemento", "Aviso", 2);
+            }
             System.out.println("o botao: "+IDbotaoClicado);
+        }
+    }
 
+    /* metodo que vai processar a jogada e printar o resultado
+     * @param void
+     * @return void
+     */
+    public void processarJogada(JButton botaoClicado)
+    {
+        IDbotaoClicado = Integer.parseInt(botaoClicado.getName());
+        if(!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado))
+        {
+            System.err.println("posicao "+IDbotaoClicado+" ja esta ocupada");
+        }
+        else
+        {
+            botaoClicado.setText("X");
         }
 
+    }
+
+    /* classe que contem evento que cuida dos botoes do radioButton
+     * eles que selecionam o tipo de jogo pcxpc, euxpc, pcxeu ..
+     * @param void
+     * @return void
+     */
+    public class tipoDoJogo implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            if (pcXeu.isSelected()) {
+                jogoDaVelha.setJogador1(new JogadorPC('X'));
+                jogoDaVelha.setJogador2(new Jogador('O'));
+                listaAlgoritmos.setEnabled(true);
+            }
+            if (euXpc.isSelected()) {
+                jogoDaVelha.setJogador1(new Jogador('X'));
+                jogoDaVelha.setJogador2(new JogadorPC('O'));
+                listaAlgoritmos.setEnabled(true);
+            }
+            if (pcXpc.isSelected()) {
+                jogoDaVelha.setJogador1(new JogadorPC('X'));
+                jogoDaVelha.setJogador2(new JogadorPC('O'));
+                listaAlgoritmos.setEnabled(true);
+            }
+            if (euXvc.isSelected()) {
+                jogoDaVelha.setJogador1(new Jogador('X'));
+                jogoDaVelha.setJogador2(new Jogador('O'));
+                listaAlgoritmos.setEnabled(false);
+            }
+
+        }
     }
 
    /* classe para o evento que cuida do bota iniciar
@@ -158,30 +227,17 @@ public class VelhaInterface extends JFrame{
     public class botaoIniciar implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            iniciar.setEnabled(false);
+            limparBotoes();
             long tempoInicio = System.currentTimeMillis();
-            if (pcXeu.isSelected()) {
-                System.err.println("Not yet developed ");
-
-            }
-            if (euXpc.isSelected()) {
-                System.err.println("Not yet developed");
-
-            }
-            if (pcXpc.isSelected()) {
-                System.err.println("Not yet developed");
-
-            }
-            if (euXvc.isSelected()) {
-                System.err.println("Not yet developed");
-
-            }
+            
             tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
 
         }
     }
 
-         /* evento que cuida da caixa para selecionar o nome
-      * do algoritmo a ser executado
+    /* evento que cuida da caixa para selecionar o nome
+     * do algoritmo a ser executado
      * @param void
      * @return void
      */
@@ -190,8 +246,7 @@ public class VelhaInterface extends JFrame{
         public void actionPerformed(ActionEvent ae) {
             profundidadeMaxima.setEnabled(false);
             tipoBusca = (String) listaAlgoritmos.getSelectedItem();
-            if(tipoBusca.compareTo("MinMax")==0)
-            {
+            if (tipoBusca.compareTo("MinMax") == 0) {
                 profundidadeMaxima.setEnabled(true);
             }
         }

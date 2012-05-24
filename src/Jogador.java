@@ -4,7 +4,7 @@
  */
 public class Jogador {
 
-    private char simbolo;//simbolo di jogador
+    private char simbolo;//simbolo do jogador
 
     public Jogador(char simbolo)
     {
@@ -14,6 +14,11 @@ public class Jogador {
     public void setSimbolo(char simbolo)
     {
         this.simbolo = simbolo;
+    }
+
+    public char getSimbolo()
+    {
+        return simbolo;
     }
 
 }

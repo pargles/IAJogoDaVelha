@@ -1,12 +1,12 @@
 /**
  * @authors pargles and stephano
- * @version 1.0
+ * @version 2.0
  */
 public class Tabuleiro {
 
     private int tamTabuleiro;
     char tabuleiro[];// tabuleiro do jogo ex: X O X O O X O X
-    private char simboloMIN,simboloMAX; // os simbolos de qem vai ser min e qem vai ser max
+    public char simboloMIN,simboloMAX; // os simbolos de qem vai ser min e qem vai ser max
 
     public Tabuleiro(char min,char max)
     {
@@ -34,32 +34,20 @@ public class Tabuleiro {
      * @param int posicao
      * @return boolean estaLivre
      */
-    public boolean estaLivre(int posicao)
+    public boolean posicaoLivre(int posicao)
     {
         return tabuleiro[posicao]==' '? true:false;
     }
 
 
-    /* metodo que retorna o max do jogador simboloMax
-     * verifica as colunas linhas e diagonais livres para max jogar
-     * @param void
-     * @return int MAX
+    /* metodo que retorna o numero de colunas linha ou diagonais
+     * livre para um jogador com um simbolo char simbolo
+     * @param char simbolo
+     * @return int calcularLivres
      */
-    public int MAX()
+    public int calcularLivres(char simbolo)
     {
         System.err.println("not yet developed");
         return 0;
     }
-
-    /* metodo que retorna o min do jogador simboloMIN
-     * verifica as colunas linhas e diagonais livres para min jogar
-     * @param void
-     * @return int MIN
-     */
-    public int MIN()
-    {
-        System.err.println("not yet developed");
-        return 0;
-    }
-
 }
