@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 /**
  *
  * @author pargles
- * @version 4.0
+ * @version 5.0
  */
 
 
@@ -37,17 +37,16 @@ public class VelhaInterface extends JFrame{
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
     private Velha jogoDaVelha;
     private long tempo;//armazena tempo que demorou para calcular em segundos
-    private Jogador jogador1,jogador2,jogadorAtual;
+    private Jogador jogadorAtual;
     JSplitPane split;
     private String imagem = "/home/pargles/NetBeansProjects/white.png";
 
   //metodo construtor
   public VelhaInterface()
   {
-      jogador1 = new Jogador('X',"VC");
-      jogador2 = new Jogador('O',"PC");
-      jogadorAtual = jogador1;
-      jogoDaVelha = new Velha(jogador1,jogador2);//default vcXpc
+      
+      jogoDaVelha = new Velha(new Jogador('X',"VC"),new Jogador('O',"PC"));//default vcXpc
+      jogadorAtual = jogoDaVelha.jogador1;
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
       painelJogadas = new JPanel();
@@ -78,6 +77,7 @@ public class VelhaInterface extends JFrame{
             botoes[i].setBackground(Color.WHITE);
             botoes[i].setOpaque(true);//botao fica opaco
             botoes[i].setEnabled(false);
+            botoes[i].setText("");
             botoes[i].setBorder(javax.swing.BorderFactory.createEtchedBorder());//seta borda mais bonita
             botoes[i].addActionListener(new clicouMatrizDeBotoes());//coloca evento vijiando ele
             painelJogadas.add(botoes[i]);//adiciona o botao no painel das jogadas
@@ -88,7 +88,7 @@ public class VelhaInterface extends JFrame{
      * @param boolean mostrar
      * @return void
      */
-    public void limparBotoes(boolean mostrar) {
+    public void limparBotoesMatriz(boolean mostrar) {
         for (int i = 0; i < 9; i++) {
             botoes[i].setEnabled(mostrar);
             botoes[i].setText("");
@@ -116,11 +116,11 @@ public class VelhaInterface extends JFrame{
         listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB","Random"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
 
-        pcXvc = new JRadioButton("PC X EU");
+        pcXvc = new JRadioButton("PC X VC");
         pcXvc.setFocusable(false);
         pcXvc.addActionListener(new tipoDoJogo());
 
-        vcXpc = new JRadioButton("EU X PC");
+        vcXpc = new JRadioButton("VC X PC");
         vcXpc.setSelected(true);//default
         vcXpc.setFocusable(false);
         vcXpc.addActionListener(new tipoDoJogo());
@@ -129,7 +129,7 @@ public class VelhaInterface extends JFrame{
         pcXpc.setFocusable(false);
         pcXpc.addActionListener(new tipoDoJogo());
 
-        vcXele = new JRadioButton("EU X VC");
+        vcXele = new JRadioButton("VC X ELE");
         vcXele.setFocusable(false);
         vcXele.addActionListener(new tipoDoJogo());
 
@@ -151,7 +151,33 @@ public class VelhaInterface extends JFrame{
         painelConfiguracoes.add(labelTempo);
     }
 
-  /* classe para o evento que identifica o numero do botao clicado
+   /* classe para o evento que cuida do bota iniciar
+   * @param void
+   * @return void
+   */
+    public class botaoIniciar implements ActionListener {
+
+        public void actionPerformed(ActionEvent e) {
+            limparBotoesMatriz(true);//preenche a matriz de botoes com vazios e habilita eles
+            mostrarBotoesConfiguracoes(false);//se iniciou o jogo deve terminar para habilitar as configuracoes novamente
+            jogadorAtual = jogoDaVelha.jogador1;// necessario pois o jogo anterior pode ter terminado no jogador 2
+            long tempoInicio = System.currentTimeMillis();
+            if(pcXvc.isSelected())//computador comeca jogando
+            {
+                botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual,tipoBusca)].setText(""+jogadorAtual.getSimbolo());
+                jogadorAtual = jogoDaVelha.jogador2;//pc ja jogou e a vez do jogador2
+            }
+            if(pcXpc.isSelected())//funcao especial para 
+            {
+                computadorXcomputador();
+            }
+
+            tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
+
+        }
+    }
+
+      /* classe para o evento que identifica o numero do botao clicado
    * na matriz de botoes, armazenando essa informacao
    * @param void
    * @return void
@@ -163,7 +189,7 @@ public class VelhaInterface extends JFrame{
             JButton botaoClicado = (JButton) e.getSource();
             if(botaoClicado.getText().equals(""))//se o campo nao estiver vazio
             {
-                processarJogada(botaoClicado);
+                processarJogada(botaoClicado,jogadorAtual);
             }
             else
             {
@@ -176,33 +202,40 @@ public class VelhaInterface extends JFrame{
      * @param void
      * @return void
      */
-    public void processarJogada(JButton botaoClicado) {
-        jogadorAtual = jogador1;
-        IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
-        if (!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado)) {
-            System.err.println("posicao " + IDbotaoClicado + " ja esta ocupada");
-        } else {
-            botaoClicado.setText("" + jogadorAtual.getSimbolo());
-            jogoDaVelha.computarJogada(IDbotaoClicado, jogadorAtual);
-            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
-                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                mostrarBotoes(true);
-                limparBotoes(false);
-                return;
-            }
-            if (!vcXele.isSelected())//unica configuracao que o PC nao joga
-            {
-                jogadorAtual = jogador2;
-                botoes[jogoDaVelha.fazerJogadaPC(jogador2, tipoBusca)].setText("" + jogoDaVelha.jogador2.getSimbolo());
+    public void processarJogada(JButton botaoClicado, Jogador jogadorDaVez) {
+        jogadorAtual = jogadorDaVez;
+        if (!pcXpc.isSelected())//as demais configuracoes alguma pessoa joga, sendo necessario pegar o botao clicado
+        {
+            IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
+            if (!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado)) {
+                System.err.println("posicao " + IDbotaoClicado + " ja esta ocupada");
+            } else {
+                botaoClicado.setText("" + jogadorAtual.getSimbolo());
+                jogoDaVelha.computarJogada(IDbotaoClicado, jogadorAtual);
                 if (jogoDaVelha.existeVencedor(jogadorAtual)) {
                     JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                    mostrarBotoes(true);
-                    limparBotoes(false);
+                    habilitarNovoJogo();
                     return;
                 }
+                jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2:jogoDaVelha.jogador1;// esta na vez do computador ou da outra pessoa jogar
+                if (!vcXele.isSelected()) {// se for a vez do computador jogar
+                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca)].setText("" + jogadorAtual.getSimbolo());
+                    if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                        JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+                        habilitarNovoJogo();
+                        return;
+                    }
+                    jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2:jogoDaVelha.jogador1;//na proxima chamada e a pessoa que joga
+                }
             }
+        } else//faz a jogada do pc
+        {
+            int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
+            botoes[jogada].setText("" + jogadorAtual.getSimbolo());
         }
     }
+
+
 
     /* Metodo que inicia a partida pcxpc e vai printando
      * na tela as posicoes selecionadas por ambos
@@ -212,19 +245,19 @@ public class VelhaInterface extends JFrame{
     public void computadorXcomputador() {
 
         while (true) {
-            jogadorAtual = jogador1;
-            int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
-            botoes[jogada].setText("" + jogoDaVelha.jogador1.getSimbolo());
-            if(jogoDaVelha.existeVencedor(jogadorAtual))
-            {
-                JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
+            jogadorAtual = jogoDaVelha.jogador1;
+            processarJogada(new JButton("vazio"), jogadorAtual);
+            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+                habilitarNovoJogo();
+                return;
             }
-            jogadorAtual = jogador2;
-            jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
-            botoes[jogada].setText("" + jogoDaVelha.jogador2.getSimbolo());
-            if(jogoDaVelha.existeVencedor(jogadorAtual))
-            {
-                JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
+            jogadorAtual = jogoDaVelha.jogador2;
+            processarJogada(new JButton("vazio"), jogadorAtual);
+            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+                habilitarNovoJogo();
+                return;
             }
         }
     }
@@ -261,37 +294,12 @@ public class VelhaInterface extends JFrame{
         }
     }
 
-   /* classe para o evento que cuida do bota iniciar
-   * @param void
-   * @return void
-   */
-    public class botaoIniciar implements ActionListener {
-
-        public void actionPerformed(ActionEvent e) {
-            mostrarBotoes(false);
-            limparBotoes(true);
-            long tempoInicio = System.currentTimeMillis();
-            if(pcXvc.isSelected())
-            {
-                botoes[jogoDaVelha.fazerJogadaPC(jogador2,tipoBusca)].setText(""+jogoDaVelha.jogador2.getSimbolo());
-                jogadorAtual = jogador2;//pc ja jogou e a vez do jogador2
-            }
-            if(pcXpc.isSelected())
-            {
-                //computadorXcomputador();
-            }
-            
-            tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
-
-        }
-    }
-
     /* metodo que recebe um boolean para mostrar ou ocultar os botoes
      * de configuracao
      * @param boolean mostrar
      * @return void
      */
-    public void mostrarBotoes(boolean mostrar) {
+    public void mostrarBotoesConfiguracoes(boolean mostrar) {
         iniciar.setEnabled(mostrar);
         pcXvc.setEnabled(mostrar);
         vcXpc.setEnabled(mostrar);
@@ -314,5 +322,17 @@ public class VelhaInterface extends JFrame{
                 profundidadeMaxima.setEnabled(true);
             }
         }
+    }
+
+     /* metodo que habilita os botoes para um novo jogo
+     * e tambem inicia um tabuleiro vazio
+     * @param void
+     * @return void
+     */
+    public void habilitarNovoJogo() {
+        mostrarBotoesConfiguracoes(true);//habilita a aba configurocoes para um novo jogo
+        limparBotoesMatriz(false);//preenche a matriz de botoes com vazios e desabilita eles
+        jogoDaVelha.tabuleiro = new Tabuleiro(jogoDaVelha.jogador1.getSimbolo(),jogoDaVelha.jogador2.getSimbolo());//cria um tabuleiro vazio
+
     }
 }
