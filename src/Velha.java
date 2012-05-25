@@ -21,12 +21,15 @@ public class Velha {
         switch (heuristica.valueOf(algoritmo)) {
             case MinMax:
                 System.err.println("MinMax search not yet developed");
+                //computarJogada(posicaoJogada,jogador);
                 break;
             case CorteAB:
                 System.err.println("CorteAB search not yet developed");
+                //computarJogada(posicaoJogada,jogador);
                 break;
             case Random:
                 posicaoJogada = jogador.jogaRandomico(tabuleiro);
+                computarJogada(posicaoJogada,jogador);
                 break;
         }
         
@@ -35,23 +38,36 @@ public class Velha {
     }
 
     /* metodo que computa a jogada, ou seja, coloca no tabuleiro
-     * a posicao selecionada pela pessoa
-     * @param int posicao
+     * a posicao selecionada pelo jogador j
+     * @param int posicao , Jogador j
      * @return void
      */
-    public void computarJogadaPessoa(int posicao)
+    public void computarJogada(int posicao,Jogador j)
     {
-        tabuleiro.tabuleiro[posicao] = jogador1.getSimbolo();
+        tabuleiro.tabuleiro[posicao] = j.getSimbolo();
+        System.out.println(j.getNome()+" tem posicoes livres: "+tabuleiro.calcularLivres(j.getSimbolo()));
     }
 
-    /* metodo que vai verificar se o jogador atual
+    /* //TODO da pra otimizar essa funcao
+     * metodo que vai verificar se o jogador atual
      * venceu a partidade depois do ultimo movimento
-     * @param void
-     * @void
+     * @param Jogador j
+     * @return boolean existeVencedor
      */
-    public boolean existeVencedor()
+    public boolean existeVencedor(Jogador j)
     {
-        return false;
+        boolean resultado=false;
+        char tab[] = tabuleiro.tabuleiro;
+        char simbolo = j.getSimbolo();
+        if(tab[0]==simbolo && tab[0]==tab[1]&&tab[1]==tab[2]){resultado = true;}
+        if(tab[3]==simbolo && tab[3]==tab[4]&&tab[4]==tab[5]){resultado = true;}
+        if(tab[6]==simbolo && tab[6]==tab[7]&&tab[7]==tab[8]){resultado = true;}
+        if(tab[0]==simbolo && tab[0]==tab[3]&&tab[6]==tab[6]){resultado = true;}
+        if(tab[1]==simbolo && tab[1]==tab[4]&&tab[4]==tab[7]){resultado = true;}
+        if(tab[2]==simbolo && tab[2]==tab[5]&&tab[5]==tab[8]){resultado = true;}
+        if(tab[0]==simbolo && tab[0]==tab[4]&&tab[4]==tab[8]){resultado = true;}
+        if(tab[6]==simbolo && tab[6]==tab[4]&&tab[4]==tab[2]){resultado = true;}
+        return resultado;
     }
 
     public void setJogador1(Jogador jogador)

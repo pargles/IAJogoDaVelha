@@ -45,9 +45,42 @@ public class Tabuleiro {
      * @param char simbolo
      * @return int calcularLivres
      */
-    public int calcularLivres(char simbolo)
-    {
-        System.err.println("not yet developed");
-        return 0;
+    public int calcularLivres(char simbolo) {
+        int livres = 8;// 3 colunas + 3 linhas + 2 diagonais num tabuleiro 3x3
+        int n = tamTabuleiro;
+        //primeiro laco calcula linhas
+        for (int i=0;i<n*(n-1);i+=n){
+            for(int j=i;j<i+n;j++){
+                if(tabuleiro[j]!=simbolo && tabuleiro[j]!=' '){//se nao for simbolo ou branco entao e peca do oponente
+                    livres--;
+                    j=n*n;//apenas um numero grande para nao entrar novamente no for
+                }
+            }
+        }
+        //segundo laco calcula colunas
+        for (int i=0;i<n;i++){
+            for(int j=i;j<=(n*(n-1))+i;j+=n){
+                if(tabuleiro[j]!=simbolo && tabuleiro[j]!=' '){//se nao for simbolo ou branco entao e peca do oponente
+                    livres--;
+                    j=n*n;//apenas um numero grande para nao entrar novamente no for
+                }
+            }
+        }
+        //terceiro laco calcula diagonal principal
+        for (int i = 0; i < n * n; i+=n+1) {
+            if (tabuleiro[i] != simbolo && tabuleiro[i] != ' ') {//se nao for simbolo ou branco entao e peca do oponente
+                livres--;
+                i = n * n;//apenas um numero grande para nao entrar novamente no for
+            }
+        }
+
+        //quarto laco calcula diagonal secundaria
+        for (int i = n-1; i <= n * n -n; i+=n-1) {
+            if (tabuleiro[i] != simbolo && tabuleiro[i] != ' ') {//se nao for simbolo ou branco entao e peca do oponente
+                livres--;
+                i = n * n;//apenas um numero grande para nao entrar novamente no for
+            }
+        }
+        return livres;
     }
 }

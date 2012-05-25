@@ -22,7 +22,7 @@ public class Randomico {
         {
             sorteado =  random.nextInt(tam);
         }
-        System.out.println("posicao sorteada: "+sorteado);
+        //System.out.println("posicao sorteada: "+sorteado);
         return sorteado;
     }
 

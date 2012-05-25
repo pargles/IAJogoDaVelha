@@ -85,12 +85,12 @@ public class VelhaInterface extends JFrame{
     }
 
     /* metodo que coloca todos os botoes do tabuleiro com o char vazio
-     * @param void
+     * @param boolean mostrar
      * @return void
      */
-    public void limparBotoes() {
+    public void limparBotoes(boolean mostrar) {
         for (int i = 0; i < 9; i++) {
-            botoes[i].setEnabled(true);
+            botoes[i].setEnabled(mostrar);
             botoes[i].setText("");
          }
     }
@@ -176,21 +176,30 @@ public class VelhaInterface extends JFrame{
      * @param void
      * @return void
      */
-    public void processarJogada(JButton botaoClicado)
-    {
+    public void processarJogada(JButton botaoClicado) {
         jogadorAtual = jogador1;
         IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
-        if(!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado))
-        {
-            System.err.println("posicao "+IDbotaoClicado+" ja esta ocupada");
-        }
-        else
-        {
-            botaoClicado.setText(""+jogadorAtual.getSimbolo());
-            jogoDaVelha.computarJogadaPessoa(IDbotaoClicado);
-            if(!vcXele.isSelected())//unica configuracao que o PC nao joga
+        if (!jogoDaVelha.tabuleiro.posicaoLivre(IDbotaoClicado)) {
+            System.err.println("posicao " + IDbotaoClicado + " ja esta ocupada");
+        } else {
+            botaoClicado.setText("" + jogadorAtual.getSimbolo());
+            jogoDaVelha.computarJogada(IDbotaoClicado, jogadorAtual);
+            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+                mostrarBotoes(true);
+                limparBotoes(false);
+                return;
+            }
+            if (!vcXele.isSelected())//unica configuracao que o PC nao joga
             {
-                botoes[jogoDaVelha.fazerJogadaPC(jogador2,tipoBusca)].setText(""+jogoDaVelha.jogador2.getSimbolo());
+                jogadorAtual = jogador2;
+                botoes[jogoDaVelha.fazerJogadaPC(jogador2, tipoBusca)].setText("" + jogoDaVelha.jogador2.getSimbolo());
+                if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                    JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+                    mostrarBotoes(true);
+                    limparBotoes(false);
+                    return;
+                }
             }
         }
     }
@@ -206,14 +215,14 @@ public class VelhaInterface extends JFrame{
             jogadorAtual = jogador1;
             int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
             botoes[jogada].setText("" + jogoDaVelha.jogador1.getSimbolo());
-            if(jogoDaVelha.existeVencedor())
+            if(jogoDaVelha.existeVencedor(jogadorAtual))
             {
                 JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
             }
             jogadorAtual = jogador2;
             jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
             botoes[jogada].setText("" + jogoDaVelha.jogador2.getSimbolo());
-            if(jogoDaVelha.existeVencedor())
+            if(jogoDaVelha.existeVencedor(jogadorAtual))
             {
                 JOptionPane.showMessageDialog(null,jogadorAtual.getNome()+" venceu !");
             }
@@ -259,13 +268,8 @@ public class VelhaInterface extends JFrame{
     public class botaoIniciar implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
-            iniciar.setEnabled(false);
-            pcXvc.setEnabled(false);
-            vcXpc.setEnabled(false);
-            pcXpc.setEnabled(false);
-            vcXele.setEnabled(false);
-            listaAlgoritmos.setEnabled(false);
-            limparBotoes();
+            mostrarBotoes(false);
+            limparBotoes(true);
             long tempoInicio = System.currentTimeMillis();
             if(pcXvc.isSelected())
             {
@@ -280,6 +284,20 @@ public class VelhaInterface extends JFrame{
             tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
 
         }
+    }
+
+    /* metodo que recebe um boolean para mostrar ou ocultar os botoes
+     * de configuracao
+     * @param boolean mostrar
+     * @return void
+     */
+    public void mostrarBotoes(boolean mostrar) {
+        iniciar.setEnabled(mostrar);
+        pcXvc.setEnabled(mostrar);
+        vcXpc.setEnabled(mostrar);
+        pcXpc.setEnabled(mostrar);
+        vcXele.setEnabled(mostrar);
+        listaAlgoritmos.setEnabled(mostrar);
     }
 
     /* evento que cuida da caixa para selecionar o nome

@@ -15,6 +15,8 @@ public class Jogador {
         nomeDoJogador = nome;
         this.simbolo = simbolo;
         random = new Randomico();
+        //minMax = new MinMax();
+        //corteAB = new AlfaBeta();
     }
 
      /* metodo que chama o algoritmo aleatorio para fazer uma
