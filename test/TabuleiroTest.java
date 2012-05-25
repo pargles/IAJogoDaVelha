@@ -14,6 +14,19 @@ public class TabuleiroTest extends TestCase {
         t = new Tabuleiro('X','O');
     }
 
+    /**
+     * Este método será chamado antes de cada método de teste.
+     */
+    @Override
+    protected void setUp() {
+    }
+
+    /**
+     * Após cada método de teste, este método é invocado para limpar o lixo.
+     */
+    protected void tearDown() {
+    }
+
     public void setaTabuleiro(char a, char b, char c, char d, char e, char f, char g, char h,char i) {
         t.tabuleiro[0]=a;
         t.tabuleiro[0]=b;
@@ -26,6 +39,11 @@ public class TabuleiroTest extends TestCase {
         t.tabuleiro[0]=i;
     }
 
+     /**
+  * Todo método que começar com a palavra "test" será executado pelo JUnit.
+  * O método testComportamento faz uma chamada ao método assertEquals(mensagem, valor
+  * esperado, valor atual)
+  */
     public void testCalcularLivres1() {
         setaTabuleiro('X',' ',' ','O','O','O','O',' ',' ');
         assertEquals(1,t.calcularLivres('X'));
