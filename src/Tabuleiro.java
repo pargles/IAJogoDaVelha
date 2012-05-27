@@ -8,10 +8,8 @@ public class Tabuleiro {
     char tabuleiro[];// tabuleiro do jogo ex: X O X O O X O X
     public char simboloMIN,simboloMAX; // os simbolos de qem vai ser min e qem vai ser max
 
-    public Tabuleiro(char min,char max)
+    public Tabuleiro()
     {
-        simboloMAX = max;
-        simboloMIN = min;
         tamTabuleiro=3;//default 3
         tabuleiro = new char[tamTabuleiro*tamTabuleiro];
         inicializarTabuleiro();
@@ -49,7 +47,7 @@ public class Tabuleiro {
         int livres = 8;// 3 colunas + 3 linhas + 2 diagonais num tabuleiro 3x3
         int n = tamTabuleiro;
         //primeiro laco calcula linhas
-        for (int i=0;i<n*(n-1);i+=n){
+        for (int i=0;i<=n*(n-1);i+=n){
             for(int j=i;j<i+n;j++){
                 if(tabuleiro[j]!=simbolo && tabuleiro[j]!=' '){//se nao for simbolo ou branco entao e peca do oponente
                     livres--;

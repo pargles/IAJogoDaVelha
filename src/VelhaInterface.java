@@ -187,7 +187,7 @@ public class VelhaInterface extends JFrame{
         public void actionPerformed(ActionEvent e)
         {
             JButton botaoClicado = (JButton) e.getSource();
-            if(botaoClicado.getText().equals(""))//se o campo nao estiver vazio
+            if(botaoClicado.getText().equals(""))//se o campo estiver vazio entao processa a jogada
             {
                 processarJogada(botaoClicado,jogadorAtual);
             }
@@ -332,7 +332,7 @@ public class VelhaInterface extends JFrame{
     public void habilitarNovoJogo() {
         mostrarBotoesConfiguracoes(true);//habilita a aba configurocoes para um novo jogo
         limparBotoesMatriz(false);//preenche a matriz de botoes com vazios e desabilita eles
-        jogoDaVelha.tabuleiro = new Tabuleiro(jogoDaVelha.jogador1.getSimbolo(),jogoDaVelha.jogador2.getSimbolo());//cria um tabuleiro vazio
+        jogoDaVelha.tabuleiro = new Tabuleiro();//cria um tabuleiro vazio
 
     }
 }

@@ -12,7 +12,7 @@ public class Velha {
     {
         this.jogador1 = jogador1;
         this.jogador2 = jogador2;
-        tabuleiro = new Tabuleiro(jogador1.getSimbolo(),jogador2.getSimbolo());
+        tabuleiro = new Tabuleiro();
     }
 
 

@@ -11,7 +11,7 @@ public class TabuleiroTest extends TestCase {
     
     public TabuleiroTest(String testName) {
         super(testName);
-        t = new Tabuleiro('X','O');
+        t = new Tabuleiro();
     }
 
     /**
@@ -29,14 +29,14 @@ public class TabuleiroTest extends TestCase {
 
     public void setaTabuleiro(char a, char b, char c, char d, char e, char f, char g, char h,char i) {
         t.tabuleiro[0]=a;
-        t.tabuleiro[0]=b;
-        t.tabuleiro[0]=c;
-        t.tabuleiro[0]=d;
-        t.tabuleiro[0]=e;
-        t.tabuleiro[0]=f;
-        t.tabuleiro[0]=g;
-        t.tabuleiro[0]=h;
-        t.tabuleiro[0]=i;
+        t.tabuleiro[1]=b;
+        t.tabuleiro[2]=c;
+        t.tabuleiro[3]=d;
+        t.tabuleiro[4]=e;
+        t.tabuleiro[5]=f;
+        t.tabuleiro[6]=g;
+        t.tabuleiro[7]=h;
+        t.tabuleiro[8]=i;
     }
 
      /**
