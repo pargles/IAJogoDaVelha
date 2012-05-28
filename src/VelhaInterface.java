@@ -235,9 +235,9 @@ public class VelhaInterface extends JFrame implements Observer{
         } else//faz a jogada do pc
         {
             int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
-            executaProcesso();
-            processo = null;//pronto para outro processo
-            //botoes[jogada].setText("" + jogadorAtual.getSimbolo());
+            //executaProcesso();
+            //processo = null;//pronto para outro processo
+            botoes[jogada].setText("" + jogadorAtual.getSimbolo());
         }
     }
 
