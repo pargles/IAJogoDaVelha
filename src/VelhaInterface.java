@@ -5,25 +5,21 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
 
 /**
  *
  * @author pargles
- * @version 5.0
+ * @version 6.0
  */
 
 
-public class VelhaInterface extends JFrame{
+public class VelhaInterface extends JFrame implements Observer{
     private enum heuristica{MinMax, CorteAB,Random;}
     private String tipoBusca ="MinMax";//default
     private JComboBox listaAlgoritmos;//para colocar os algoritmos
@@ -37,7 +33,9 @@ public class VelhaInterface extends JFrame{
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
     private Velha jogoDaVelha;
     private long tempo;//armazena tempo que demorou para calcular em segundos
+    private int TEMPO = 1000;//1 segundo entre as jogadas do PC
     private Jogador jogadorAtual;
+    private Thread processo;
     JSplitPane split;
     private String imagem = "/home/pargles/NetBeansProjects/white.png";
 
@@ -213,25 +211,33 @@ public class VelhaInterface extends JFrame{
                 botaoClicado.setText("" + jogadorAtual.getSimbolo());
                 jogoDaVelha.computarJogada(IDbotaoClicado, jogadorAtual);
                 if (jogoDaVelha.existeVencedor(jogadorAtual)) {
-                    JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                    habilitarNovoJogo();
+                    mensagemVencedor(jogadorAtual);
                     return;
                 }
-                jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2:jogoDaVelha.jogador1;// esta na vez do computador ou da outra pessoa jogar
+                if (jogoDaVelha.tabuleiro.tabuleiroEstaCheio()) {
+                    mensagemEmpate();
+                    return;
+                }
+                jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1;// esta na vez do computador ou da outra pessoa jogar
                 if (!vcXele.isSelected()) {// se for a vez do computador jogar
                     botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca)].setText("" + jogadorAtual.getSimbolo());
                     if (jogoDaVelha.existeVencedor(jogadorAtual)) {
-                        JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                        habilitarNovoJogo();
+                        mensagemVencedor(jogadorAtual);
                         return;
                     }
-                    jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2:jogoDaVelha.jogador1;//na proxima chamada e a pessoa que joga
+                    if (jogoDaVelha.tabuleiro.tabuleiroEstaCheio()) {
+                        mensagemEmpate();
+                        return;
+                    }
+                    jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1;//na proxima chamada e a pessoa que joga
                 }
             }
         } else//faz a jogada do pc
         {
             int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
-            botoes[jogada].setText("" + jogadorAtual.getSimbolo());
+            executaProcesso();
+            processo = null;//pronto para outro processo
+            //botoes[jogada].setText("" + jogadorAtual.getSimbolo());
         }
     }
 
@@ -243,23 +249,40 @@ public class VelhaInterface extends JFrame{
      * @return void
      */
     public void computadorXcomputador() {
-
-        while (true) {
+    //enquanto que o tabuleiro nao estiver cheio
+        while (!jogoDaVelha.tabuleiro.tabuleiroEstaCheio()) {
             jogadorAtual = jogoDaVelha.jogador1;
             processarJogada(new JButton("vazio"), jogadorAtual);
             if (jogoDaVelha.existeVencedor(jogadorAtual)) {
-                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                habilitarNovoJogo();
-                return;
+                mensagemVencedor(jogadorAtual); return;
             }
             jogadorAtual = jogoDaVelha.jogador2;
+            if(jogoDaVelha.tabuleiro.tabuleiroEstaCheio()){
+                mensagemEmpate(); return;
+            }
             processarJogada(new JButton("vazio"), jogadorAtual);
             if (jogoDaVelha.existeVencedor(jogadorAtual)) {
-                JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
-                habilitarNovoJogo();
-                return;
+                mensagemVencedor(jogadorAtual);  return;
             }
         }
+    }
+
+    /* metodo que abre uma mensagem indicando o vencedor
+     * @param Jogador jogadorAtual
+     * @return void
+     */
+    public void mensagemVencedor(Jogador jogadoAtual) {
+        JOptionPane.showMessageDialog(null, jogadorAtual.getNome() + " venceu !");
+        habilitarNovoJogo();
+    }
+
+    /* metodo que abre uma mensagem indicando o empate
+     * @param void
+     * @return void
+     */
+    public void mensagemEmpate() {
+        JOptionPane.showMessageDialog(null, " Houve Empate !");
+        habilitarNovoJogo();
     }
 
     /* classe que contem evento que cuida dos botoes do radioButton
@@ -334,5 +357,77 @@ public class VelhaInterface extends JFrame{
         limparBotoesMatriz(false);//preenche a matriz de botoes com vazios e desabilita eles
         jogoDaVelha.tabuleiro = new Tabuleiro();//cria um tabuleiro vazio
 
+    }
+
+    private void executaProcesso() {
+        if (processo == null) { //Instancia a thread SE não existir uma
+            processo = new Thread(new printarComPausa(this));
+            processo.start();
+        } else {
+            System.out.println("O processo ainda está em execução");
+        }
+    }
+
+    public class printarComPausa extends Observable implements Runnable {
+
+        public printarComPausa(Observer observador) {
+            addObserver(observador);
+        }
+
+        public void run() {
+            //if (oito.way.size() > 0){
+            int i = 0;
+            char[] temp = jogoDaVelha.tabuleiro.tabuleiro;
+            //cada posicao dele, a cada passagem do laco, sera subsituida pela posicao final
+            notifyObservers(temp);
+            setChanged();//Notifica o processamento a cada 1 iteração
+            //Notifica fim do processo
+            notifyObservers(new Boolean(true));
+            setChanged();
+        }
+    }
+    
+            /**
+     * Atualiza a tela
+     * @see java.util.Observerupdate(java.util.Observable, java.lang.Object)
+     * @param o Objeto que sofreu uma atualização
+     * @param arg Argumento passado pelo objeto para seus observadores
+     */
+    public void update(Observable o, Object arg) {
+        //se nao for um boolean, ou seja se nao terminou o processo
+        if (!(arg instanceof Boolean)) {
+            char[] temp = (char[]) arg;
+            printarJogoPC(temp);
+            try {
+                Thread.sleep(TEMPO);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(VelhaInterface.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+      /* metodo que instancia os nove botoes da matriz de botoes
+   * e insere eles no painel painelJogadas
+   * @param void
+   * @return void
+   */
+    public void printarJogoPC(char[] vetor) {
+        painelJogadas.removeAll();
+        remove(painelJogadas);
+
+        for (int i = 0; i < 9; i++) {
+            botoes[i] = new JButton();
+            botoes[i].setName(String.valueOf(i));//seta o ID do botao
+            botoes[i].setBackground(Color.WHITE);
+            botoes[i].setOpaque(true);//botao fica opaco
+            botoes[i].setEnabled(true);
+            botoes[i].setText(vetor[i] + "");
+            botoes[i].setBorder(javax.swing.BorderFactory.createEtchedBorder());//seta borda mais bonita
+            botoes[i].addActionListener(new clicouMatrizDeBotoes());//coloca evento vijiando ele
+            painelJogadas.add(botoes[i]);//adiciona o botao no painel das jogadas
+        }
+        add(painelJogadas);
+        validate();
+        repaint();
     }
 }

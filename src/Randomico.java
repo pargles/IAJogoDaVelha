@@ -16,7 +16,7 @@ public class Randomico {
 
     public int executa(Tabuleiro t)
     {
-        int tam = t.tabuleiro.length-1;
+        int tam = t.tabuleiro.length;
         int sorteado = random.nextInt(tam);
         while(t.tabuleiro[sorteado]!=' ')//nao pode sortear aonde ja tem 'X' ou 'O' repete o sorteio
         {

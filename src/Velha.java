@@ -45,7 +45,7 @@ public class Velha {
     public void computarJogada(int posicao,Jogador j)
     {
         tabuleiro.tabuleiro[posicao] = j.getSimbolo();
-        System.out.println(j.getNome()+" tem posicoes livres: "+tabuleiro.calcularLivres(j.getSimbolo()));
+        //System.out.println(j.getNome()+" tem posicoes livres: "+tabuleiro.calcularLivres(j.getSimbolo()));
     }
 
     /* //TODO da pra otimizar essa funcao

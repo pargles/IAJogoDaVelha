@@ -1,6 +1,6 @@
 /**
  * @authors pargles and stephano
- * @version 2.0
+ * @version 3.0
  */
 public class Tabuleiro {
 
@@ -13,6 +13,16 @@ public class Tabuleiro {
         tamTabuleiro=3;//default 3
         tabuleiro = new char[tamTabuleiro*tamTabuleiro];
         inicializarTabuleiro();
+    }
+
+    public Tabuleiro(char[] vetor)
+    {
+        tamTabuleiro=3;//default 3
+        tabuleiro = new char[tamTabuleiro*tamTabuleiro];
+        for(int i=0;i<vetor.length;i++)
+        {
+            tabuleiro[i]=vetor[i];
+        }
     }
 
     /* metodo que preenche todo tabuleiro de char com posicoes espacos ' '
@@ -35,6 +45,26 @@ public class Tabuleiro {
     public boolean posicaoLivre(int posicao)
     {
         return tabuleiro[posicao]==' '? true:false;
+    }
+
+    /* metodo que verifica se o tabuleiro esta cheio
+     * necessario pois pode nao haver vencedor porem
+     * nao tem mais jogadas a serem feitas
+     * @param void
+     * @return boolean tabuleiroEstaCheio
+     */
+    public boolean tabuleiroEstaCheio()
+    {
+        boolean cheio = true;
+        for(int i=0;i<tabuleiro.length;i++)
+        {
+            if(tabuleiro[i]==' ')//se tem algum especao ainda nao esta cheio
+            {
+                cheio = false;
+                i =tabuleiro.length;//ja descobriu que nao esta cheio, nao precisa continuar
+            }
+        }
+        return cheio;
     }
 
 
