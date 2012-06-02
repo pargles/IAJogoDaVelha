@@ -20,8 +20,8 @@ public class Velha {
         int posicaoJogada=0;
         switch (heuristica.valueOf(algoritmo)) {
             case MinMax:
-                System.err.println("MinMax search not yet developed");
-                //computarJogada(posicaoJogada,jogador);
+                posicaoJogada = jogador.jogaMinMax(tabuleiro);
+                computarJogada(posicaoJogada,jogador);
                 break;
             case CorteAB:
                 System.err.println("CorteAB search not yet developed");

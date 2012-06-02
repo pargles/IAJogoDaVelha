@@ -7,7 +7,7 @@ public class Jogador {
     private String nomeDoJogador;
     private char simbolo;//simbolo do jogador
     private Randomico random;
-    //private MinMax minMax;
+    private MinMax minMax;
     //private AlfaBeta corteAB;
 
     public Jogador(char simbolo,String nome)
@@ -15,7 +15,7 @@ public class Jogador {
         nomeDoJogador = nome;
         this.simbolo = simbolo;
         random = new Randomico();
-        //minMax = new MinMax();
+        minMax = new MinMax();
         //corteAB = new AlfaBeta();
     }
 
@@ -28,6 +28,11 @@ public class Jogador {
     public int jogaRandomico(Tabuleiro t)
     {
         return random.executa(t);
+    }
+
+    public int jogaMinMax(Tabuleiro t)
+    {
+        return minMax.executa(t,this);
     }
 
     public void setSimbolo(char simbolo)

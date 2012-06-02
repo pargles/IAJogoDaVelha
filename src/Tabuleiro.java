@@ -1,10 +1,10 @@
 /**
  * @authors pargles and stephano
- * @version 3.0
+ * @version 4.0
  */
 public class Tabuleiro {
 
-    private int tamTabuleiro;
+    public int tamTabuleiro;
     char tabuleiro[];// tabuleiro do jogo ex: X O X O O X O X
     public char simboloMIN,simboloMAX; // os simbolos de qem vai ser min e qem vai ser max
 
@@ -65,6 +65,25 @@ public class Tabuleiro {
             }
         }
         return cheio;
+    }
+
+    /* metodo que verifica se o tabuleiro esta vazio
+     * necessario pois quando o PC comeca jogando
+     * ele deve sortear uma posicao e nao escolher sempre
+     * a mesma
+     * @param void
+     * @return boolean tabuleiroEstaCheio
+     */
+    public boolean tabuleiroEstaVazio() {
+        boolean vazio = true;
+        for (int i = 0; i < tabuleiro.length; i++) {
+            if (tabuleiro[i] != ' ')//se tem algum especao ainda nao esta cheio
+            {
+                vazio = false;
+                i = tabuleiro.length;//ja descobriu que nao esta cheio, nao precisa continuar
+            }
+        }
+        return vazio;
     }
 
 

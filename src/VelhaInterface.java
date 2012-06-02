@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -329,6 +328,7 @@ public class VelhaInterface extends JFrame implements Observer{
         pcXpc.setEnabled(mostrar);
         vcXele.setEnabled(mostrar);
         listaAlgoritmos.setEnabled(mostrar);
+        profundidadeMaxima.setEnabled(mostrar);
     }
 
     /* evento que cuida da caixa para selecionar o nome
