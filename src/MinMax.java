@@ -1,8 +1,11 @@
 
+import java.util.Random;
+
+
 /**
- * @author pargles
- * @version 2.0
- */
+* @author pargles
+* @version 2.0
+*/
 class MinMax {
 
     private int profundidadeMaxima;
@@ -10,6 +13,7 @@ class MinMax {
     private int posicao;
     private static int nodosAbertos;
     private int INFINITO = Integer.MAX_VALUE;
+    private static Random random = new Random( System.currentTimeMillis());
 
     public MinMax() {
         profundidadeMaxima =8;//default, e o maximo
@@ -21,10 +25,10 @@ class MinMax {
         profundidade = 0;
         if(t.tabuleiroEstaVazio())//se o PC inicia jogando, ou seja, o tabuleiro esta vazio, o PC deve sortear uma posicao
         {
-            return j.jogaRandomico(t);
+            return random.nextInt(8);
         }
         minmax(j.getSimbolo(),t);
-        System.out.println("jogou em: "+posicao+ " nodos abertos: "+nodosAbertos);
+        System.out.println("jogou em: "+posicao);
         return posicao;
     }
 
@@ -47,7 +51,7 @@ class MinMax {
         {
             melhorValor = -INFINITO;
         }
-        if (profundidade < profundidadeMaxima) {
+        if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
             for (int i = 0; i < 9; i++) {
                 if (tabuleiro.tabuleiro[i] == ' ') {
                     tabuleiro.tabuleiro[i] = jogador;
@@ -73,7 +77,7 @@ class MinMax {
         {
             melhorValor = INFINITO;
         }
-        if (profundidade < profundidadeMaxima) {
+        if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
             for (int i = 0; i < 9; i++) {
                 if (tabuleiro.tabuleiro[i] == ' ') {
                     tabuleiro.tabuleiro[i] = jogador;

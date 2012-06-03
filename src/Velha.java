@@ -6,7 +6,6 @@
 public class Velha {
     public Jogador jogador1,jogador2;
     public Tabuleiro tabuleiro;
-    private enum heuristica{MinMax, CorteAB,Random;}
 
     public Velha(Jogador jogador1,Jogador jogador2)
     {
@@ -16,36 +15,18 @@ public class Velha {
     }
 
 
-    public int fazerJogadaPC(Jogador jogador, String algoritmo) {
-        int posicaoJogada=0;
-        switch (heuristica.valueOf(algoritmo)) {
-            case MinMax:
-                posicaoJogada = jogador.jogaMinMax(tabuleiro);
-                computarJogada(posicaoJogada,jogador);
-                break;
-            case CorteAB:
-                System.err.println("CorteAB search not yet developed");
-                //computarJogada(posicaoJogada,jogador);
-                break;
-            case Random:
-                posicaoJogada = jogador.jogaRandomico(tabuleiro);
-                computarJogada(posicaoJogada,jogador);
-                break;
-        }
-        
-        tabuleiro.tabuleiro[posicaoJogada] = jogador.getSimbolo();//coloca o simbolo do jogador na posicao jogada
-        return posicaoJogada;
+    public Tabuleiro fazerJogadaPC(Jogador jogador) {
+        tabuleiro = jogador.joga(tabuleiro);
+        return tabuleiro;
     }
 
-    /* metodo que computa a jogada, ou seja, coloca no tabuleiro
-     * a posicao selecionada pelo jogador j
-     * @param int posicao , Jogador j
-     * @return void
-     */
-    public void computarJogada(int posicao,Jogador j)
-    {
-        tabuleiro.tabuleiro[posicao] = j.getSimbolo();
-        //System.out.println(j.getNome()+" tem posicoes livres: "+tabuleiro.calcularLivres(j.getSimbolo()));
+    //computa uma jogada do player humano, verifica se a posicao eh valida
+    public Tabuleiro computaJogadaHumano(Jogador humano, int pos){
+        if (tabuleiro.posicaoLivre(pos)){
+            tabuleiro.setPosicao(pos, humano.simbolo);
+            return tabuleiro;
+        }
+        return null;
     }
 
     /* //TODO da pra otimizar essa funcao
@@ -54,7 +35,7 @@ public class Velha {
      * @param Jogador j
      * @return boolean existeVencedor
      */
-    public boolean existeVencedor(Jogador j)
+    public boolean vencedor(Jogador j)
     {
         boolean resultado=false;
         char tab[] = tabuleiro.tabuleiro;

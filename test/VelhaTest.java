@@ -15,7 +15,7 @@ public class VelhaTest extends TestCase {
         j2= new Jogador('O',"maguila");
         v = new Velha(j1,j2);
     }
-
+/*
     public void testExisteVencedor1() {
         v.tabuleiro.tabuleiro[0] = 'X';
         v.tabuleiro.tabuleiro[1] = 'X';
@@ -72,5 +72,5 @@ public class VelhaTest extends TestCase {
         assertEquals(true,v.existeVencedor(j2));
     }
 
-
+*/
 }

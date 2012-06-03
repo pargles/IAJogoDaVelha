@@ -19,8 +19,8 @@ import javax.swing.*;
 
 
 public class VelhaInterface extends JFrame implements Observer{
-    private enum heuristica{MinMax, CorteAB,Random;}
-    private String tipoBusca ="MinMax";//default
+    private enum heuristica{MinMax, MinMaxAB,Random;}
+    private String tipoBusca ="MinMaxAB";//default
     private JComboBox listaAlgoritmos;//para colocar os algoritmos
     private JButton[] botoes;//contem os botoes da matriz 3x3 do jogo
     private JButton iniciar;
@@ -30,19 +30,18 @@ public class VelhaInterface extends JFrame implements Observer{
     private JTextField profundidadeMaxima;
     private JLabel labelProfundidade,labelTempo,labelVazio;
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
-    private Velha jogoDaVelha;
+    Velha jogoDaVelha;
     private long tempo;//armazena tempo que demorou para calcular em segundos
     private int TEMPO = 1000;//1 segundo entre as jogadas do PC
     private Jogador jogadorAtual;
     private Thread processo;
     JSplitPane split;
-    private String imagem = "/home/pargles/NetBeansProjects/white.png";
 
   //metodo construtor
   public VelhaInterface()
   {
       
-      jogoDaVelha = new Velha(new Jogador('X',"VC"),new Jogador('O',"PC"));//default vcXpc
+      jogoDaVelha = new Velha(new Jogador('X',"VC", tipoBusca, 5),new Jogador('O',"PC", tipoBusca, 5));//default vcXpc
       jogadorAtual = jogoDaVelha.jogador1;
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
@@ -106,11 +105,11 @@ public class VelhaInterface extends JFrame implements Observer{
         labelVazio = new JLabel("");
 
         profundidadeMaxima = new JTextField();
-        profundidadeMaxima.setText("5");//default
+        profundidadeMaxima.setText("2");//default
         //profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
 
         listaAlgoritmos = new JComboBox();
-        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB","Random"}));
+        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMaxAB", "MinMax","Random"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
 
         pcXvc = new JRadioButton("PC X VC");
@@ -161,7 +160,7 @@ public class VelhaInterface extends JFrame implements Observer{
             long tempoInicio = System.currentTimeMillis();
             if(pcXvc.isSelected())//computador comeca jogando
             {
-                botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual,tipoBusca)].setText(""+jogadorAtual.getSimbolo());
+                botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setText(""+jogadorAtual.getSimbolo());
                 jogadorAtual = jogoDaVelha.jogador2;//pc ja jogou e a vez do jogador2
             }
             if(pcXpc.isSelected())//funcao especial para 
@@ -208,8 +207,8 @@ public class VelhaInterface extends JFrame implements Observer{
                 System.err.println("posicao " + IDbotaoClicado + " ja esta ocupada");
             } else {
                 botaoClicado.setText("" + jogadorAtual.getSimbolo());
-                jogoDaVelha.computarJogada(IDbotaoClicado, jogadorAtual);
-                if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                jogoDaVelha.computaJogadaHumano(jogadorAtual, IDbotaoClicado);
+                if (jogoDaVelha.vencedor(jogadorAtual)) {
                     mensagemVencedor(jogadorAtual);
                     return;
                 }
@@ -217,10 +216,10 @@ public class VelhaInterface extends JFrame implements Observer{
                     mensagemEmpate();
                     return;
                 }
-                jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1;// esta na vez do computador ou da outra pessoa jogar
+                jogadorAtual = (jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1);// esta na vez do computador ou da outra pessoa jogar
                 if (!vcXele.isSelected()) {// se for a vez do computador jogar
-                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca)].setText("" + jogadorAtual.getSimbolo());
-                    if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setText("" + jogadorAtual.getSimbolo());
+                    if (jogoDaVelha.vencedor(jogadorAtual)) {
                         mensagemVencedor(jogadorAtual);
                         return;
                     }
@@ -228,15 +227,16 @@ public class VelhaInterface extends JFrame implements Observer{
                         mensagemEmpate();
                         return;
                     }
-                    jogadorAtual = jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1;//na proxima chamada e a pessoa que joga
+                    jogadorAtual = (jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1);//na proxima chamada e a pessoa que joga
                 }
             }
         } else//faz a jogada do pc
         {
-            int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual, tipoBusca);
+            int jogada = jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos;
             //executaProcesso();
             //processo = null;//pronto para outro processo
             botoes[jogada].setText("" + jogadorAtual.getSimbolo());
+            Teste.printTable(jogoDaVelha.tabuleiro);
         }
     }
 
@@ -252,7 +252,7 @@ public class VelhaInterface extends JFrame implements Observer{
         while (!jogoDaVelha.tabuleiro.tabuleiroEstaCheio()) {
             jogadorAtual = jogoDaVelha.jogador1;
             processarJogada(new JButton("vazio"), jogadorAtual);
-            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+            if (jogoDaVelha.vencedor(jogadorAtual)) {
                 mensagemVencedor(jogadorAtual); return;
             }
             jogadorAtual = jogoDaVelha.jogador2;
@@ -260,7 +260,7 @@ public class VelhaInterface extends JFrame implements Observer{
                 mensagemEmpate(); return;
             }
             processarJogada(new JButton("vazio"), jogadorAtual);
-            if (jogoDaVelha.existeVencedor(jogadorAtual)) {
+            if (jogoDaVelha.vencedor(jogadorAtual)) {
                 mensagemVencedor(jogadorAtual);  return;
             }
         }
@@ -295,16 +295,16 @@ public class VelhaInterface extends JFrame implements Observer{
             listaAlgoritmos.setEnabled(true);
             profundidadeMaxima.setEnabled(true);
             if (pcXvc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC"));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca,5));
                 jogoDaVelha.setJogador2(new Jogador('O',"VC"));             
             }
             if (vcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC"));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca,5));
             }
             if (pcXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC1"));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC2"));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca,5));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca,5));
             }
             if (vcXele.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
@@ -328,7 +328,6 @@ public class VelhaInterface extends JFrame implements Observer{
         pcXpc.setEnabled(mostrar);
         vcXele.setEnabled(mostrar);
         listaAlgoritmos.setEnabled(mostrar);
-        profundidadeMaxima.setEnabled(mostrar);
     }
 
     /* evento que cuida da caixa para selecionar o nome
@@ -342,8 +341,19 @@ public class VelhaInterface extends JFrame implements Observer{
             profundidadeMaxima.setEnabled(false);
             tipoBusca = (String) listaAlgoritmos.getSelectedItem();
             if (tipoBusca.compareTo("MinMax") == 0) {
+                jogoDaVelha.jogador1.setEstrategia("MinMax");
+                jogoDaVelha.jogador2.setEstrategia("MinMax");
                 profundidadeMaxima.setEnabled(true);
+                return;
             }
+            if (tipoBusca.compareTo("MinMaxAB") == 0) {
+                jogoDaVelha.jogador1.setEstrategia("MinMaxAB");
+                jogoDaVelha.jogador2.setEstrategia("MinMaxAB");
+                profundidadeMaxima.setEnabled(true);
+                return;
+            }
+            jogoDaVelha.jogador1.setEstrategia("Random");
+            jogoDaVelha.jogador2.setEstrategia("Random");
         }
     }
 
