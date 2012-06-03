@@ -47,7 +47,7 @@ class MinMax {
     private int max(char jogador, Tabuleiro tabuleiro)
     {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (existeVencedor('O',tabuleiro))
+        if (tabuleiro.existeVencedor())
         {
             melhorValor = -INFINITO;
         }
@@ -73,7 +73,7 @@ class MinMax {
     private int min(char jogador, Tabuleiro tabuleiro)
     {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (existeVencedor('X',tabuleiro))
+        if (tabuleiro.existeVencedor())
         {
             melhorValor = INFINITO;
         }
@@ -95,21 +95,4 @@ class MinMax {
         profundidade--;
         return melhorValor;
     }
-
-    public boolean existeVencedor(char jogador, Tabuleiro tabuleiro)
-    {
-        boolean resultado=false;
-        char tab[] = tabuleiro.tabuleiro;
-        char simbolo = jogador;
-        if(tab[0]==simbolo && tab[0]==tab[1]&&tab[1]==tab[2]){resultado = true;}
-        if(tab[3]==simbolo && tab[3]==tab[4]&&tab[4]==tab[5]){resultado = true;}
-        if(tab[6]==simbolo && tab[6]==tab[7]&&tab[7]==tab[8]){resultado = true;}
-        if(tab[0]==simbolo && tab[0]==tab[3]&&tab[3]==tab[6]){resultado = true;}
-        if(tab[1]==simbolo && tab[1]==tab[4]&&tab[4]==tab[7]){resultado = true;}
-        if(tab[2]==simbolo && tab[2]==tab[5]&&tab[5]==tab[8]){resultado = true;}
-        if(tab[0]==simbolo && tab[0]==tab[4]&&tab[4]==tab[8]){resultado = true;}
-        if(tab[6]==simbolo && tab[6]==tab[4]&&tab[4]==tab[2]){resultado = true;}
-        return resultado;
-    }
-
 }
