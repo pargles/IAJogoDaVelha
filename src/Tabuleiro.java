@@ -244,4 +244,14 @@ public class Tabuleiro {
         return livres;
     }
 
+        public void printTable(){
+        System.out.print("---------------\n");
+        for (int i = 0; i < tabuleiro.length; i++){
+            System.out.print(tabuleiro[i]+"|");
+            if ((i == 2) || (i == 5) || (i == 8)){
+                System.out.println();
+            }
+        }
+    }
+
 }

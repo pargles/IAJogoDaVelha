@@ -44,25 +44,24 @@ class MinMax {
         }
     }
 
-    private int max(char jogador, Tabuleiro tabuleiro)
-    {
+    private int max(char jogador, Tabuleiro tabuleiro) {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor())
-        {
+        if (tabuleiro.existeVencedor()) {
             melhorValor = -INFINITO;
-        }
-        if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
-            for (int i = 0; i < 9; i++) {
-                if (tabuleiro.tabuleiro[i] == ' ') {
-                    tabuleiro.tabuleiro[i] = jogador;
-                    profundidade++;
-                    int valor = minmax('O', tabuleiro);
+        } else {
+            if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
+                for (int i = 0; i < 9; i++) {
+                    if (tabuleiro.tabuleiro[i] == ' ') {
+                        tabuleiro.tabuleiro[i] = jogador;
+                        profundidade++;
+                        int valor = minmax('O', tabuleiro);
 
-                    if (valor > melhorValor) {
-                        posicao = i;
-                        melhorValor = valor;
+                        if (valor >= melhorValor) {
+                            posicao = i;
+                            melhorValor = valor;
+                        }
+                        tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                     }
-                    tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                 }
             }
         }
@@ -70,25 +69,24 @@ class MinMax {
         return melhorValor;
     }
 
-    private int min(char jogador, Tabuleiro tabuleiro)
-    {
+    private int min(char jogador, Tabuleiro tabuleiro) {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor())
-        {
+        if (tabuleiro.existeVencedor()) {
             melhorValor = INFINITO;
-        }
-        if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
-            for (int i = 0; i < 9; i++) {
-                if (tabuleiro.tabuleiro[i] == ' ') {
-                    tabuleiro.tabuleiro[i] = jogador;
-                    profundidade++;
-                    int valor = minmax('X', tabuleiro);
+        } else {
+            if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
+                for (int i = 0; i < 9; i++) {
+                    if (tabuleiro.tabuleiro[i] == ' ') {
+                        tabuleiro.tabuleiro[i] = jogador;
+                        profundidade++;
+                        int valor = minmax('X', tabuleiro);
 
-                    if (valor < melhorValor) {
-                        posicao =i;
-                        melhorValor = valor;
+                        if (valor <= melhorValor) {
+                            posicao = i;
+                            melhorValor = valor;
+                        }
+                        tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                     }
-                    tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                 }
             }
         }

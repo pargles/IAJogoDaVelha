@@ -10,16 +10,16 @@
 public class Teste {
 
     public static void main(String []args){
-        Jogador pc = new Jogador('X',"PC","MinMaxAB", 5);
+        Jogador pc = new Jogador('X',"PC","MinMax", 5);
         Jogador eu = new Jogador('O',"EU");
         Velha game = new Velha(pc,eu);
-        char[] tab = {' ',' ','O',
-                      ' ',' ',' ',
-                      'X','X','O'};
+        char[] tab = {'O',' ',' ',
+                      ' ','X',' ',
+                      'O',' ','X'};
         game.tabuleiro.tabuleiro = tab;
         game.fazerJogadaPC(pc);
-       
-        //MinMax.printTree(pc.minMax.lista);
+        printTable(game.tabuleiro);
+        game.tabuleiro.setPosicao(3, 'O');
         printTable(game.tabuleiro);
     }
 

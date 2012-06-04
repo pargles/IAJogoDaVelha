@@ -50,6 +50,7 @@ public class Jogador {
                 int jogada = minMax.executa(t, this);
                 //minMaxAB.playRoundDefault(t,simbolo,0);
                 t.setPosicao(jogada, simbolo);
+                //t.printTable();
                 return t;
             case MinMaxAB:
                 System.out.println("MinMaxAB!");
