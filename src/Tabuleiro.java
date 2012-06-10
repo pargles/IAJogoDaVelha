@@ -144,6 +144,7 @@ public class Tabuleiro {
      */
     public int calcularVitoria(char simbolo) {
         int prog = 0;
+        int vit = 0;
         int n = tamTabuleiro;
         //primeiro laco calcula linhas
         for (int i = 0; i < n*n ; i = i + n){
@@ -156,7 +157,7 @@ public class Tabuleiro {
                     break;
                 }
             }
-            if (prog == 3) return Integer.MAX_VALUE;
+            if (prog == 3) return 20;
             vit = vit + prog;
         }
         //segundo laco calcula colunas
@@ -170,33 +171,33 @@ public class Tabuleiro {
                     break;
                 }
             }
-            if (prog == 3) return Integer.MAX_VALUE;
+            if (prog == 3) return 20;
             vit = vit + prog;
         }
         //terceiro laco calcula diagonal principal
+        prog = 0;
         for (int i = 0; i < n * n; i+=n+1) {
-            prog = 0;
             if (tabuleiro[i] == simbolo){   //se encontrou o simbolo incrementa o progresso
                 prog++;
             }else if (tabuleiro[i] != ' '){ //se for um espaço segue buscando, se for o simbolo do oponente, nao tem progresso nessa linha, sai do laço
                 prog = 0;
                 break;
             }
-            if (prog == 3) return Integer.MAX_VALUE;
-            vit = vit + prog;
+            if (prog == 3) return 20;
         }
+        vit = vit + prog;
         //quarto laco calcula diagonal secundaria
+        prog = 0;
         for (int i = n-1; i <= n * n -n; i+=n-1) {
-            prog = 0;
             if (tabuleiro[i] == simbolo){   //se encontrou o simbolo incrementa o progresso
                 prog++;
             }else if (tabuleiro[i] != ' '){ //se for um espaço segue buscando, se for o simbolo do oponente, nao tem progresso nessa linha, sai do laço
                 prog = 0;
                 break;
             }
-            if (prog == 3) return Integer.MAX_VALUE;
-            vit = vit + prog;
+            if (prog == 3) return 20;
         }
+        vit = vit + prog;
         return vit;
     }
 

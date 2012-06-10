@@ -54,7 +54,7 @@ public class Jogador {
                 return t;
             case MinMaxAB:
                 System.out.println("MinMaxAB!");
-                minMaxAB.playRoundAlphaBeta(t,simbolo,0);
+                minMaxAB.playRound(t,simbolo,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 t.setPosicao(minMaxAB.bestMove, simbolo);
                 return t;
             case Random:
