@@ -298,16 +298,16 @@ public class VelhaInterface extends JFrame implements Observer{
             profundidadeMaxima.setEnabled(true);
             //System.out.println(profundidadeMaxima.getText());
             if (pcXvc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC","MinMaxAB",Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
                 jogoDaVelha.setJogador2(new Jogador('O',"VC"));
             }
             if (vcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC","MinMaxAB",Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
             }
             if (pcXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC1","MinMaxAB",Integer.parseInt(profundidadeMaxima.getText())));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC2","MinMaxAB",Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
             }
             if (vcXele.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
@@ -315,7 +315,6 @@ public class VelhaInterface extends JFrame implements Observer{
                 listaAlgoritmos.setEnabled(false);
                 profundidadeMaxima.setEnabled(false);
             }
-
         }
     }
 

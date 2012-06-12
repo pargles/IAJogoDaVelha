@@ -46,7 +46,7 @@ class MinMax {
 
     private int max(char jogador, Tabuleiro tabuleiro) {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor()) {
+        if (tabuleiro.existeVencedor(jogador)) {
             melhorValor = -INFINITO;
         } else {
             if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
@@ -71,7 +71,7 @@ class MinMax {
 
     private int min(char jogador, Tabuleiro tabuleiro) {
         int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor()) {
+        if (tabuleiro.existeVencedor(jogador)) {
             melhorValor = INFINITO;
         } else {
             if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {

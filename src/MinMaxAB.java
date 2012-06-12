@@ -16,7 +16,7 @@ public class MinMaxAB {
 
     //executa uma jogada do minmax alpha e beta
     public int playRound(Tabuleiro t,char player, int depth, int alpha, int beta){
-        if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor()){
+        if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor('X')|| t.existeVencedor('O')){
             int vitmin = t.calcularVitoria(t.simboloMIN);
             if (vitmin == 20) return -20+depth;
             int vitmax = t.calcularVitoria(t.simboloMAX);

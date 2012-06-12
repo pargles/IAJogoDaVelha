@@ -116,25 +116,16 @@ public class Tabuleiro {
     }
 
 
-    public boolean existeVencedor(){
+    public boolean existeVencedor(char jogador){
         boolean resultado=false;
-        if(tabuleiro[0]=='X' && tabuleiro[0]==tabuleiro[1]&&tabuleiro[1]==tabuleiro[2]){resultado = true;}
-        if(tabuleiro[3]=='X' && tabuleiro[3]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[5]){resultado = true;}
-        if(tabuleiro[6]=='X' && tabuleiro[6]==tabuleiro[7]&&tabuleiro[7]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[0]=='X' && tabuleiro[0]==tabuleiro[3]&&tabuleiro[3]==tabuleiro[6]){resultado = true;}
-        if(tabuleiro[1]=='X' && tabuleiro[1]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[7]){resultado = true;}
-        if(tabuleiro[2]=='X' && tabuleiro[2]==tabuleiro[5]&&tabuleiro[5]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[0]=='X' && tabuleiro[0]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[6]=='X' && tabuleiro[6]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[2]){resultado = true;}
-
-        if(tabuleiro[0]=='O' && tabuleiro[0]==tabuleiro[1]&&tabuleiro[1]==tabuleiro[2]){resultado = true;}
-        if(tabuleiro[3]=='O' && tabuleiro[3]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[5]){resultado = true;}
-        if(tabuleiro[6]=='O' && tabuleiro[6]==tabuleiro[7]&&tabuleiro[7]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[0]=='O' && tabuleiro[0]==tabuleiro[3]&&tabuleiro[3]==tabuleiro[6]){resultado = true;}
-        if(tabuleiro[1]=='O' && tabuleiro[1]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[7]){resultado = true;}
-        if(tabuleiro[2]=='O' && tabuleiro[2]==tabuleiro[5]&&tabuleiro[5]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[0]=='O' && tabuleiro[0]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[8]){resultado = true;}
-        if(tabuleiro[6]=='O' && tabuleiro[6]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[2]){resultado = true;}
+        if(tabuleiro[0]==jogador && tabuleiro[0]==tabuleiro[1]&&tabuleiro[1]==tabuleiro[2]){resultado = true;}
+        if(tabuleiro[3]==jogador && tabuleiro[3]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[5]){resultado = true;}
+        if(tabuleiro[6]==jogador && tabuleiro[6]==tabuleiro[7]&&tabuleiro[7]==tabuleiro[8]){resultado = true;}
+        if(tabuleiro[0]==jogador && tabuleiro[0]==tabuleiro[3]&&tabuleiro[3]==tabuleiro[6]){resultado = true;}
+        if(tabuleiro[1]==jogador && tabuleiro[1]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[7]){resultado = true;}
+        if(tabuleiro[2]==jogador && tabuleiro[2]==tabuleiro[5]&&tabuleiro[5]==tabuleiro[8]){resultado = true;}
+        if(tabuleiro[0]==jogador && tabuleiro[0]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[8]){resultado = true;}
+        if(tabuleiro[6]==jogador && tabuleiro[6]==tabuleiro[4]&&tabuleiro[4]==tabuleiro[2]){resultado = true;}
         return resultado;
     }
 
