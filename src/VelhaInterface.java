@@ -69,6 +69,8 @@ public class VelhaInterface extends JFrame implements Observer{
     public void insereBotoesNoLayout() {
         for (int i = 0; i < 9; i++) {
             botoes[i] = new JButton();
+            //botoes[i].setFont(new java.awt.Font("URW Chancery L", 0, 24));
+            botoes[i].setFont(new java.awt.Font("Arial", 0, 24));
             botoes[i].setName(String.valueOf(i));//seta o ID do botao
             botoes[i].setBackground(Color.WHITE);
             botoes[i].setOpaque(true);//botao fica opaco
@@ -207,6 +209,7 @@ public class VelhaInterface extends JFrame implements Observer{
                 System.err.println("posicao " + IDbotaoClicado + " ja esta ocupada");
             } else {
                 botaoClicado.setText("" + jogadorAtual.getSimbolo());
+                botaoClicado.setForeground(jogadorAtual.getCor());
                 jogoDaVelha.computaJogadaHumano(jogadorAtual, IDbotaoClicado);
                 if (jogoDaVelha.vencedor(jogadorAtual)) {
                     mensagemVencedor(jogadorAtual);
@@ -219,6 +222,7 @@ public class VelhaInterface extends JFrame implements Observer{
                 jogadorAtual = (jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1);// esta na vez do computador ou da outra pessoa jogar
                 if (!vcXele.isSelected()) {// se for a vez do computador jogar
                     botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setText("" + jogadorAtual.getSimbolo());
+                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setForeground(jogadorAtual.getCor());
                     if (jogoDaVelha.vencedor(jogadorAtual)) {
                         mensagemVencedor(jogadorAtual);
                         return;
@@ -236,6 +240,7 @@ public class VelhaInterface extends JFrame implements Observer{
             //executaProcesso();
             //processo = null;//pronto para outro processo
             botoes[jogada].setText("" + jogadorAtual.getSimbolo());
+            botoes[jogada].setForeground(jogadorAtual.getCor());
             Teste.printTable(jogoDaVelha.tabuleiro);
         }
     }
@@ -312,6 +317,8 @@ public class VelhaInterface extends JFrame implements Observer{
                 listaAlgoritmos.setEnabled(false);
                 profundidadeMaxima.setEnabled(false);
             }
+            jogoDaVelha.jogador1.setCor(Color.red);
+            jogoDaVelha.jogador2.setCor(Color.blue);
 
         }
     }

@@ -1,3 +1,6 @@
+
+import java.awt.Color;
+
 /**
  * @authors pargles and stephano
  * @version 2.0
@@ -11,6 +14,7 @@ public class Jogador {
     MinMax minMax;
     private enum estrategias{MinMax, MinMaxAB,Random;}
     private String estrategia;
+    private Color cor = Color.RED;//default
 
     //os jogadores sao criados com uma estrategia de jogo associada e um nivel de previsao de jogadas (depth) utilizado no MinMaxAB
     public Jogador(char simbolo,String nome, String estrat, int depth)
@@ -70,6 +74,11 @@ public class Jogador {
         this.simbolo = simbolo;
     }
 
+    public void setCor(Color cor)
+    {
+        this.cor = cor;
+    }
+
     public char getSimbolo()
     {
         return simbolo;
@@ -78,6 +87,11 @@ public class Jogador {
     public String getNome()
     {
         return nome;
+    }
+
+    public Color getCor()
+    {
+        return cor;
     }
 
 }

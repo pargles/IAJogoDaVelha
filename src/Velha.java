@@ -37,18 +37,7 @@ public class Velha {
      */
     public boolean vencedor(Jogador j)
     {
-        boolean resultado=false;
-        char tab[] = tabuleiro.tabuleiro;
-        char simbolo = j.getSimbolo();
-        if(tab[0]==simbolo && tab[0]==tab[1]&&tab[1]==tab[2]){resultado = true;}
-        if(tab[3]==simbolo && tab[3]==tab[4]&&tab[4]==tab[5]){resultado = true;}
-        if(tab[6]==simbolo && tab[6]==tab[7]&&tab[7]==tab[8]){resultado = true;}
-        if(tab[0]==simbolo && tab[0]==tab[3]&&tab[3]==tab[6]){resultado = true;}
-        if(tab[1]==simbolo && tab[1]==tab[4]&&tab[4]==tab[7]){resultado = true;}
-        if(tab[2]==simbolo && tab[2]==tab[5]&&tab[5]==tab[8]){resultado = true;}
-        if(tab[0]==simbolo && tab[0]==tab[4]&&tab[4]==tab[8]){resultado = true;}
-        if(tab[6]==simbolo && tab[6]==tab[4]&&tab[4]==tab[2]){resultado = true;}
-        return resultado;
+        return tabuleiro.existeVencedor(j.getSimbolo());
     }
 
     public void setJogador1(Jogador jogador)

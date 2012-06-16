@@ -52,7 +52,7 @@ public class MinMaxAB {
         }
         lista.get(depth).add(t);*/
         //System.out.println("Chamou!"+depth);
-        if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor()){
+        if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor('X')|| t.existeVencedor('O')){
             //if (t.existeVencedor()) System.out.println("EXISTE VENCEDOR!");
             if (t.calcularVitoria(t.simboloMIN) == Integer.MAX_VALUE) return Integer.MIN_VALUE;
             t.calcularVitoria(t.simboloMAX);
