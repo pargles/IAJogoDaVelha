@@ -10,30 +10,30 @@ public class Jogador {
     private String nome;
     char simbolo;//simbolo do jogador
     private Randomico random;
-    MinMaxAB minMaxAB;
+    CorteAB minMaxAB;
     MinMax minMax;
-    private enum estrategias{MinMax, MinMaxAB,Random;}
+    private enum estrategias{MinMax, CorteAB,Random;}
     private String estrategia;
     private Color cor = Color.RED;//default
 
-    //os jogadores sao criados com uma estrategia de jogo associada e um nivel de previsao de jogadas (depth) utilizado no MinMaxAB
+    //os jogadores sao criados com uma estrategia de jogo associada e um nivel de previsao de jogadas (depth) utilizado no CorteAB
     public Jogador(char simbolo,String nome, String estrat, int depth)
     {
         estrategia = estrat;
         this.nome = nome;
         this.simbolo = simbolo;
         random = new Randomico();
-        minMaxAB = new MinMaxAB(depth);
+        minMaxAB = new CorteAB(depth);
         minMax = new MinMax();
     }
 
     public Jogador(char simbolo,String nome)
     {
-        estrategia = "MinMaxAB";
+        estrategia = "CorteAB";
         this.nome = nome;
         this.simbolo = simbolo;
         random = new Randomico();
-        minMaxAB = new MinMaxAB(5);
+        minMaxAB = new CorteAB(5);
         minMax = new MinMax();
     }
 
@@ -56,8 +56,8 @@ public class Jogador {
                 t.setPosicao(jogada, simbolo);
                 //t.printTable();
                 return t;
-            case MinMaxAB:
-                System.out.println("MinMaxAB!");
+            case CorteAB:
+                System.out.println("CorteAB!");
                 minMaxAB.playRound(t,simbolo,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 t.setPosicao(minMaxAB.bestMove, simbolo);
                 return t;

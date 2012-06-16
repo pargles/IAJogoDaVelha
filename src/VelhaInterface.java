@@ -5,10 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -18,9 +14,9 @@ import javax.swing.*;
  */
 
 
-public class VelhaInterface extends JFrame implements Observer{
+public class VelhaInterface extends JFrame{
     private enum heuristica{MinMax, MinMaxAB,Random;}
-    private String tipoBusca ="MinMaxAB";//default
+    private String tipoBusca ="MinMax";//default
     private JComboBox listaAlgoritmos;//para colocar os algoritmos
     private JButton[] botoes;//contem os botoes da matriz 3x3 do jogo
     private JButton iniciar;
@@ -111,7 +107,7 @@ public class VelhaInterface extends JFrame implements Observer{
         //profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
 
         listaAlgoritmos = new JComboBox();
-        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMaxAB", "MinMax","Random"}));
+        listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB","Random"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
 
         pcXvc = new JRadioButton("PC X VC");
@@ -159,12 +155,16 @@ public class VelhaInterface extends JFrame implements Observer{
             limparBotoesMatriz(true);//preenche a matriz de botoes com vazios e habilita eles
             mostrarBotoesConfiguracoes(false);//se iniciou o jogo deve terminar para habilitar as configuracoes novamente
             jogadorAtual = jogoDaVelha.jogador1;// necessario pois o jogo anterior pode ter terminado no jogador 2
+            jogoDaVelha.jogador1.setCor(Color.red);
+            jogoDaVelha.jogador2.setCor(Color.blue);
             jogoDaVelha.jogador1.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
             jogoDaVelha.jogador2.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
             long tempoInicio = System.currentTimeMillis();
             if(pcXvc.isSelected())//computador comeca jogando
             {
-                botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setText(""+jogadorAtual.getSimbolo());
+                int posicao = jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos;
+                botoes[posicao].setText(""+jogadorAtual.getSimbolo());
+                botoes[posicao].setForeground(jogadorAtual.getCor());
                 jogadorAtual = jogoDaVelha.jogador2;//pc ja jogou e a vez do jogador2
             }
             if(pcXpc.isSelected())//funcao especial para 
@@ -204,6 +204,7 @@ public class VelhaInterface extends JFrame implements Observer{
      */
     public void processarJogada(JButton botaoClicado, Jogador jogadorDaVez) {
         jogadorAtual = jogadorDaVez;
+        int posicaoJogada;
         if (!pcXpc.isSelected())//as demais configuracoes alguma pessoa joga, sendo necessario pegar o botao clicado
         {
             IDbotaoClicado = Integer.parseInt(botaoClicado.getName());//cada  botao tem um nome que vai de 0 ate 8
@@ -223,8 +224,9 @@ public class VelhaInterface extends JFrame implements Observer{
                 }
                 jogadorAtual = (jogoDaVelha.jogador1 == jogadorAtual ? jogoDaVelha.jogador2 : jogoDaVelha.jogador1);// esta na vez do computador ou da outra pessoa jogar
                 if (!vcXele.isSelected()) {// se for a vez do computador jogar
-                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setText("" + jogadorAtual.getSimbolo());
-                    botoes[jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos].setForeground(jogadorAtual.getCor());
+                    posicaoJogada = jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos;
+                    botoes[posicaoJogada].setText("" + jogadorAtual.getSimbolo());
+                    botoes[posicaoJogada].setForeground(jogadorAtual.getCor());
                     if (jogoDaVelha.vencedor(jogadorAtual)) {
                         mensagemVencedor(jogadorAtual);
                         return;
@@ -353,9 +355,9 @@ public class VelhaInterface extends JFrame implements Observer{
                 profundidadeMaxima.setEnabled(true);
                 return;
             }
-            if (tipoBusca.compareTo("MinMaxAB") == 0) {
-                jogoDaVelha.jogador1.setEstrategia("MinMaxAB");
-                jogoDaVelha.jogador2.setEstrategia("MinMaxAB");
+            if (tipoBusca.compareTo("CorteAB") == 0) {
+                jogoDaVelha.jogador1.setEstrategia("CorteAB");
+                jogoDaVelha.jogador2.setEstrategia("CorteAB");
                 profundidadeMaxima.setEnabled(true);
                 return;
             }
@@ -374,77 +376,5 @@ public class VelhaInterface extends JFrame implements Observer{
         limparBotoesMatriz(false);//preenche a matriz de botoes com vazios e desabilita eles
         jogoDaVelha.tabuleiro = new Tabuleiro();//cria um tabuleiro vazio
 
-    }
-
-    private void executaProcesso() {
-        if (processo == null) { //Instancia a thread SE não existir uma
-            processo = new Thread(new printarComPausa(this));
-            processo.start();
-        } else {
-            System.out.println("O processo ainda está em execução");
-        }
-    }
-
-    public class printarComPausa extends Observable implements Runnable {
-
-        public printarComPausa(Observer observador) {
-            addObserver(observador);
-        }
-
-        public void run() {
-            //if (oito.way.size() > 0){
-            int i = 0;
-            char[] temp = jogoDaVelha.tabuleiro.tabuleiro;
-            //cada posicao dele, a cada passagem do laco, sera subsituida pela posicao final
-            notifyObservers(temp);
-            setChanged();//Notifica o processamento a cada 1 iteração
-            //Notifica fim do processo
-            notifyObservers(new Boolean(true));
-            setChanged();
-        }
-    }
-    
-            /**
-     * Atualiza a tela
-     * @see java.util.Observerupdate(java.util.Observable, java.lang.Object)
-     * @param o Objeto que sofreu uma atualização
-     * @param arg Argumento passado pelo objeto para seus observadores
-     */
-    public void update(Observable o, Object arg) {
-        //se nao for um boolean, ou seja se nao terminou o processo
-        if (!(arg instanceof Boolean)) {
-            char[] temp = (char[]) arg;
-            printarJogoPC(temp);
-            try {
-                Thread.sleep(TEMPO);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(VelhaInterface.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-      /* metodo que instancia os nove botoes da matriz de botoes
-   * e insere eles no painel painelJogadas
-   * @param void
-   * @return void
-   */
-    public void printarJogoPC(char[] vetor) {
-        painelJogadas.removeAll();
-        remove(painelJogadas);
-
-        for (int i = 0; i < 9; i++) {
-            botoes[i] = new JButton();
-            botoes[i].setName(String.valueOf(i));//seta o ID do botao
-            botoes[i].setBackground(Color.WHITE);
-            botoes[i].setOpaque(true);//botao fica opaco
-            botoes[i].setEnabled(true);
-            botoes[i].setText(vetor[i] + "");
-            botoes[i].setBorder(javax.swing.BorderFactory.createEtchedBorder());//seta borda mais bonita
-            botoes[i].addActionListener(new clicouMatrizDeBotoes());//coloca evento vijiando ele
-            painelJogadas.add(botoes[i]);//adiciona o botao no painel das jogadas
-        }
-        add(painelJogadas);
-        validate();
-        repaint();
     }
 }

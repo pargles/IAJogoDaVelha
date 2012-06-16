@@ -6,6 +6,10 @@ import javax.swing.UIManager;
  *
  * @author pargles
  * @version 1.0
+ * @references http://www.slideshare.net/iaudesc/algoritmos-de-jogos-8174709
+ * http://cboard.cprogramming.com/game-programming/131140-tic-tac-toe-minimax-algorithm-problem.html
+ * http://jogosonline.clickgratis.com.br/classico/jogo_da_velha-163.html
+ * http://www.ocf.berkeley.edu/~yosenl/extras/alphabeta/alphabeta.html
  */
 public class Main {
 

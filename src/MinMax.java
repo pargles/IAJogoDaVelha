@@ -14,6 +14,7 @@ class MinMax {
     private static int nodosAbertos;
     private int INFINITO = Integer.MAX_VALUE;
     private static Random random = new Random( System.currentTimeMillis());
+    char[] tabInicial = new char[9];
 
     public MinMax() {
         profundidadeMaxima =2;//default, e o maximo
@@ -23,6 +24,7 @@ class MinMax {
     public int executa(Tabuleiro t,Jogador j)
     {
         profundidade = 0;
+        tabInicial = t.tabuleiro.clone();
         if(t.tabuleiroEstaVazio())//se o PC inicia jogando, ou seja, o tabuleiro esta vazio, o PC deve sortear uma posicao
         {
             return random.nextInt(8);
@@ -45,49 +47,50 @@ class MinMax {
     }
 
     private int max(char jogador, Tabuleiro tabuleiro) {
-        int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor(jogador)) {
-            melhorValor = -INFINITO;
-        } else if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
+        int valorPosicao = -INFINITO;
+        if (tabuleiro.existeVencedor('O')) {profundidade -- ;return -INFINITO;}
+        else if(tabuleiro.tabuleiroEstaCheio()){profundidade--;return 0;}
+        else if (profundidade < profundidadeMaxima) {
             for (int i = 0; i < 9; i++) {
                 if (tabuleiro.tabuleiro[i] == ' ') {
                     tabuleiro.tabuleiro[i] = jogador;
                     profundidade++;
                     int valor = minmax('O', tabuleiro);
 
-                    if (valor >= melhorValor) {
+                    if (valor > valorPosicao) {
                         posicao = i;
-                        melhorValor = valor;
+                        valorPosicao = valor;
                     }
                     tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                 }
             }
         }
-
+        valorPosicao = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
         profundidade--;
-        return melhorValor;
+        return valorPosicao;
     }
 
     private int min(char jogador, Tabuleiro tabuleiro) {
-        int melhorValor = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
-        if (tabuleiro.existeVencedor(jogador)) {
-            melhorValor = INFINITO;
-        } else if (profundidade < profundidadeMaxima && !tabuleiro.tabuleiroEstaCheio()) {
+        int valorPosicao = INFINITO;
+        if (tabuleiro.existeVencedor('X')) {profundidade -- ;return INFINITO;}
+        else if(tabuleiro.tabuleiroEstaCheio()){profundidade -- ;return 0;}
+        else if (profundidade < profundidadeMaxima) {
             for (int i = 0; i < 9; i++) {
                 if (tabuleiro.tabuleiro[i] == ' ') {
                     tabuleiro.tabuleiro[i] = jogador;
                     profundidade++;
                     int valor = minmax('X', tabuleiro);
 
-                    if (valor <= melhorValor) {
+                    if (valor < valorPosicao) {
                         posicao = i;
-                        melhorValor = valor;
+                        valorPosicao = valor;
                     }
                     tabuleiro.tabuleiro[i] = ' ';//tira a peca movimentada
                 }
             }
         }
+        valorPosicao = tabuleiro.calcularLivres('X') - tabuleiro.calcularLivres('O');
         profundidade--;
-        return melhorValor;
+        return valorPosicao;
     }
 }
