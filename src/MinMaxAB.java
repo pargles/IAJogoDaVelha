@@ -1,95 +1,69 @@
 /**
- *
- * @author Stephano
- */
+*
+* @author Stephano
+*/
 
 import java.util.*;
 public class MinMaxAB {
 
-    int alpha;
-    int beta;
     int depth;
     int bestMove;
-    //ArrayList<ArrayList<Tabuleiro>> lista = new ArrayList<ArrayList<Tabuleiro>>();
     public MinMaxAB(int maxDepth){
-        alpha = Integer.MIN_VALUE;
-        beta = Integer.MAX_VALUE;
         depth = maxDepth;
-        bestMove = -1;
+        bestMove = -2;
     }
 
-    /*
-     * executa uma partida inteira utilizando minmax padrao
-     */
-    public ArrayList<Tabuleiro> executeDefault(){
-        return new ArrayList<Tabuleiro>();
-    }
-
-    //executa uma jogada do minmax padrao
-    public Tabuleiro playRoundDefault(Tabuleiro t,char player, int depth){
-        return new Tabuleiro();
-    }
-
-    /*
-     * executa uma partida inteira utilizando minmax alpha e beta
-     */
-    public ArrayList<Tabuleiro> executeAlphaBeta(){
-        return new ArrayList<Tabuleiro>();
-    }
 
     //executa uma jogada do minmax alpha e beta
-    public int playRoundAlphaBeta(Tabuleiro t,char player, int depth){
-        alpha = Integer.MIN_VALUE;
-        beta = Integer.MAX_VALUE;
-        bestMove = -1;
-        return minmaxAB(t,player,depth);
-    }
-
-    private int minmaxAB(Tabuleiro t,char player, int depth){
-        //Teste.printTable(t);
-        /*if (depth >= lista.size()){
-            lista.add(new ArrayList<Tabuleiro>());
-        }
-        lista.get(depth).add(t);*/
-        //System.out.println("Chamou!"+depth);
+    public int playRound(Tabuleiro t,char player, int depth, int alpha, int beta){
         if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor('X')|| t.existeVencedor('O')){
-            //if (t.existeVencedor()) System.out.println("EXISTE VENCEDOR!");
-            if (t.calcularVitoria(t.simboloMIN) == Integer.MAX_VALUE) return Integer.MIN_VALUE;
-            t.calcularVitoria(t.simboloMAX);
-            return t.vit;
+            int vitmin = t.calcularVitoria(t.simboloMIN);
+            if (vitmin == 20) return -20+depth;
+            int vitmax = t.calcularVitoria(t.simboloMAX);
+            if (vitmax == 20) return 20 - depth;
+            return vitmax;
         }
         Tabuleiro aux;
         int val;
+        int bestMove = -2;
         if (player == t.simboloMAX){
-            for (int i = 0; (i < t.tabuleiro.length) && (alpha <= beta); i++){ //gera os sucessores
+            for (int i = 0; (i < t.tabuleiro.length) && (alpha < beta); i++){ //gera os sucessores
                 if (t.posicaoLivre(i)){
                     aux = t.clone();
                     aux.setPosicao(i, player);
-                    val = playRoundAlphaBeta(aux, t.simboloMIN, depth+1);
+                    val = playRound(aux, t.simboloMIN, depth+1, alpha, beta);
                     if (val > alpha) {
                         alpha = val;
                         bestMove = i;
+                        if (val >= 19)break;
+                        if ((depth+1 == this.depth) && (val + depth+1 == 20))break;
                     }
                 }
             }
+            this.bestMove = bestMove;
             return alpha;
         }
         if (player == t.simboloMIN){
-            for (int i = 0; (i < t.tabuleiro.length) && (alpha <= beta); i++){ //gera os sucessores
+            for (int i = 0; (i < t.tabuleiro.length) && (alpha < beta); i++){ //gera os sucessores
                 if (t.posicaoLivre(i)){
                     aux = t.clone();
                     aux.setPosicao(i, player);
-                    val = playRoundAlphaBeta(aux, t.simboloMAX, depth+1);
+                    val = playRound(aux, t.simboloMAX, depth+1, alpha, beta);
                     if (val < beta){
                         beta = val;
                         bestMove = i;
+                        if (val <= -19)break;
+                        if ((depth+1 == this.depth) && (val - depth+1 == -20))break;
                     }
                 }
             }
+            this.bestMove = bestMove;
             return beta;
         }
         return -1;
     }
+
+
     public static void printTree(ArrayList<ArrayList<Tabuleiro>> l){
         for (int i = 0; i < l.size(); i++){
             System.out.println("NIVEL "+i+":\n");

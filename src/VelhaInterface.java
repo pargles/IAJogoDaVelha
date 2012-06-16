@@ -159,6 +159,8 @@ public class VelhaInterface extends JFrame implements Observer{
             limparBotoesMatriz(true);//preenche a matriz de botoes com vazios e habilita eles
             mostrarBotoesConfiguracoes(false);//se iniciou o jogo deve terminar para habilitar as configuracoes novamente
             jogadorAtual = jogoDaVelha.jogador1;// necessario pois o jogo anterior pode ter terminado no jogador 2
+            jogoDaVelha.jogador1.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
+            jogoDaVelha.jogador2.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
             long tempoInicio = System.currentTimeMillis();
             if(pcXvc.isSelected())//computador comeca jogando
             {
@@ -299,17 +301,18 @@ public class VelhaInterface extends JFrame implements Observer{
         public void actionPerformed(ActionEvent e) {
             listaAlgoritmos.setEnabled(true);
             profundidadeMaxima.setEnabled(true);
+            //System.out.println(profundidadeMaxima.getText());
             if (pcXvc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca,5));
-                jogoDaVelha.setJogador2(new Jogador('O',"VC"));             
+                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador2(new Jogador('O',"VC"));
             }
             if (vcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca,5));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
             }
             if (pcXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca,5));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca,5));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
             }
             if (vcXele.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
@@ -317,9 +320,6 @@ public class VelhaInterface extends JFrame implements Observer{
                 listaAlgoritmos.setEnabled(false);
                 profundidadeMaxima.setEnabled(false);
             }
-            jogoDaVelha.jogador1.setCor(Color.red);
-            jogoDaVelha.jogador2.setCor(Color.blue);
-
         }
     }
 
