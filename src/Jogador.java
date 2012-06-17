@@ -17,13 +17,13 @@ public class Jogador {
     private Color cor = Color.RED;//default
 
     //os jogadores sao criados com uma estrategia de jogo associada e um nivel de previsao de jogadas (depth) utilizado no CorteAB
-    public Jogador(char simbolo,String nome, String estrat, int depth)
+    public Jogador(char simbolo,String nome, String estrat)
     {
         estrategia = estrat;
         this.nome = nome;
         this.simbolo = simbolo;
         random = new Randomico();
-        minMaxAB = new CorteAB(depth);
+        minMaxAB = new CorteAB();
         minMax = new MinMax();
     }
 
@@ -33,7 +33,7 @@ public class Jogador {
         this.nome = nome;
         this.simbolo = simbolo;
         random = new Randomico();
-        minMaxAB = new CorteAB(5);
+        minMaxAB = new CorteAB();
         minMax = new MinMax();
     }
 

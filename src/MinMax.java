@@ -13,7 +13,6 @@ class MinMax {
     private int posicao;
     private static int nodosAbertos;
     private int INFINITO = Integer.MAX_VALUE;
-    private static Random random = new Random( System.currentTimeMillis());
     char[] tabInicial = new char[9];
 
     public MinMax() {
@@ -25,10 +24,6 @@ class MinMax {
     {
         profundidade = 0;
         tabInicial = t.tabuleiro.clone();
-        if(t.tabuleiroEstaVazio())//se o PC inicia jogando, ou seja, o tabuleiro esta vazio, o PC deve sortear uma posicao
-        {
-            return random.nextInt(8);
-        }
         minmax(j.getSimbolo(),t);
         System.out.println("jogou em: "+posicao);
         return posicao;

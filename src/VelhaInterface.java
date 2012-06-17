@@ -37,7 +37,7 @@ public class VelhaInterface extends JFrame{
   public VelhaInterface()
   {
       
-      jogoDaVelha = new Velha(new Jogador('X',"VC", tipoBusca, 5),new Jogador('O',"PC", tipoBusca, 5));//default vcXpc
+      jogoDaVelha = new Velha(new Jogador('X',"VC", tipoBusca),new Jogador('O',"PC", tipoBusca));//default vcXpc
       jogadorAtual = jogoDaVelha.jogador1;
       Dimension boardSize = new Dimension(300, 300);
       setTitle("Jogo da Velha");
@@ -305,16 +305,16 @@ public class VelhaInterface extends JFrame{
             profundidadeMaxima.setEnabled(true);
             //System.out.println(profundidadeMaxima.getText());
             if (pcXvc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC",tipoBusca));
                 jogoDaVelha.setJogador2(new Jogador('O',"VC"));
             }
             if (vcXpc.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC",tipoBusca));
             }
             if (pcXpc.isSelected()) {
-                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
-                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca,Integer.parseInt(profundidadeMaxima.getText())));
+                jogoDaVelha.setJogador1(new Jogador('X',"PC1",tipoBusca));
+                jogoDaVelha.setJogador2(new Jogador('O',"PC2",tipoBusca));
             }
             if (vcXele.isSelected()) {
                 jogoDaVelha.setJogador1(new Jogador('X',"VC"));

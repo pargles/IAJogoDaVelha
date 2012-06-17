@@ -8,8 +8,8 @@ public class CorteAB {
 
     int depth;
     int bestMove;
-    public CorteAB(int maxDepth){
-        depth = maxDepth;
+    public CorteAB(){
+        depth = 2;
         bestMove = -2;
     }
 
