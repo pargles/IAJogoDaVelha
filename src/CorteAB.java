@@ -8,6 +8,8 @@ public class CorteAB {
 
     int depth;
     int bestMove;
+    static int open = 0;
+
     public CorteAB(){
         depth = 2;
         bestMove = -2;
@@ -16,6 +18,12 @@ public class CorteAB {
 
     //executa uma jogada do minmax alpha e beta
     public int playRound(Tabuleiro t,char player, int depth, int alpha, int beta){
+        open = 0;
+        return execute(t,player,depth,alpha,beta);
+    }
+
+    private int execute(Tabuleiro t,char player, int depth, int alpha, int beta){
+        open++;
         if ((this.depth == depth) || t.tabuleiroEstaCheio() || t.existeVencedor('X')|| t.existeVencedor('O')){
             int vitmin = t.calcularVitoria(t.simboloMIN);
             if (vitmin == 20) return -20+depth;
@@ -31,7 +39,7 @@ public class CorteAB {
                 if (t.posicaoLivre(i)){
                     aux = t.clone();
                     aux.setPosicao(i, player);
-                    val = playRound(aux, t.simboloMIN, depth+1, alpha, beta);
+                    val = execute(aux, t.simboloMIN, depth+1, alpha, beta);
                     if (val > alpha) {
                         alpha = val;
                         bestMove = i;
@@ -48,7 +56,7 @@ public class CorteAB {
                 if (t.posicaoLivre(i)){
                     aux = t.clone();
                     aux.setPosicao(i, player);
-                    val = playRound(aux, t.simboloMAX, depth+1, alpha, beta);
+                    val = execute(aux, t.simboloMAX, depth+1, alpha, beta);
                     if (val < beta){
                         beta = val;
                         bestMove = i;

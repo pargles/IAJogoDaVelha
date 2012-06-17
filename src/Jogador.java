@@ -62,7 +62,7 @@ public class Jogador {
             case CorteAB:
                 //System.out.println("CorteAB!");
                 minMaxAB.playRound(t,simbolo,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                //nodosAbertos =;
+                nodosAbertos = minMaxAB.open;
                 t.setPosicao(minMaxAB.bestMove, simbolo);
                 return t;
             case Random:
