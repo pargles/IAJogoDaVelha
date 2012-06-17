@@ -249,7 +249,7 @@ public class Tabuleiro {
     public int elementosValidos() {
         int validos = 0;
         for (int i = 0; i < tabuleiro.length; i++) {
-            if(tabuleiro[i] == 'X' || tabuleiro[i] == 'O') {
+            if(tabuleiro[i] != ' ') {
                 validos++;
             }
         }

@@ -9,7 +9,7 @@ import java.util.Random;
 public class Velha {
     public Jogador jogador1,jogador2;
     public Tabuleiro tabuleiro;
-    Random r = new Random(System.currentTimeMillis());;
+    Random r = new Random(System.currentTimeMillis());
 
     public Velha(Jogador jogador1,Jogador jogador2)
     {

@@ -10,6 +10,7 @@ public class Jogador {
     private String nome;
     char simbolo;//simbolo do jogador
     private Randomico random;
+    private int nodosAbertos;
     CorteAB minMaxAB;
     MinMax minMax;
     private enum estrategias{MinMax, CorteAB,Random;}
@@ -25,6 +26,7 @@ public class Jogador {
         random = new Randomico();
         minMaxAB = new CorteAB();
         minMax = new MinMax();
+        nodosAbertos =0;//default para jogador humano
     }
 
     public Jogador(char simbolo,String nome)
@@ -35,6 +37,7 @@ public class Jogador {
         random = new Randomico();
         minMaxAB = new CorteAB();
         minMax = new MinMax();
+        nodosAbertos=0;//default para jogador humano
     }
 
     public void setEstrategia(String e){
@@ -50,19 +53,21 @@ public class Jogador {
     {
         switch(estrategias.valueOf(estrategia)){
             case MinMax:
-                System.out.println("MinMax!");
+                //System.out.println("MinMax!");
+                t.livres=0;
                 int jogada = minMax.executa(t, this);
-                //minMaxAB.playRoundDefault(t,simbolo,0);
+                nodosAbertos = minMax.nodosAbertos;
                 t.setPosicao(jogada, simbolo);
-                //t.printTable();
                 return t;
             case CorteAB:
-                System.out.println("CorteAB!");
+                //System.out.println("CorteAB!");
                 minMaxAB.playRound(t,simbolo,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                //nodosAbertos =;
                 t.setPosicao(minMaxAB.bestMove, simbolo);
                 return t;
             case Random:
-                System.out.println("Random!");
+                //System.out.println("Random!");
+                nodosAbertos=1;//somente sorteia 1
                 t.setPosicao(random.executa(t), simbolo);
                 return t;
         }
@@ -79,6 +84,12 @@ public class Jogador {
         this.cor = cor;
     }
 
+    public void setProfundidade(int depth)
+    {
+        this.minMaxAB.depth = depth;
+        this.minMax.profundidadeMaxima= depth;
+    }
+
     public char getSimbolo()
     {
         return simbolo;
@@ -92,6 +103,11 @@ public class Jogador {
     public Color getCor()
     {
         return cor;
+    }
+
+    public int getNodosAbertos()
+    {
+        return nodosAbertos;
     }
 
 }

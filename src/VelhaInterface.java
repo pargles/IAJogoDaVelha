@@ -24,14 +24,10 @@ public class VelhaInterface extends JFrame{
     private ButtonGroup group;//junta todos os radio buttons, pcxeu, euxpc ...
     private JPanel painelJogadas,painelConfiguracoes;
     private JTextField profundidadeMaxima;
-    private JLabel labelProfundidade,labelTempo,labelVazio;
+    private JLabel labelProfundidade,labelNodos,labelVazio;
     private int IDbotaoClicado;//armazeba o numero do botao clicado da matriz de botoes
     Velha jogoDaVelha;
-    private long tempo;//armazena tempo que demorou para calcular em segundos
-    private int TEMPO = 1000;//1 segundo entre as jogadas do PC
     private Jogador jogadorAtual;
-    private Thread processo;
-    JSplitPane split;
 
   //metodo construtor
   public VelhaInterface()
@@ -99,13 +95,12 @@ public class VelhaInterface extends JFrame{
         iniciar.addActionListener(new botaoIniciar());
 
         labelProfundidade = new JLabel("Profundidade:");
-        labelTempo = new JLabel("tempo: ");
+        labelNodos = new JLabel("Nodos: ");
         labelVazio = new JLabel("");
 
         profundidadeMaxima = new JTextField();
-        profundidadeMaxima.setText("2");//default
-        //profundidadeMaxima.setEnabled(false);//so vai aparecer quando o
-
+        profundidadeMaxima.setText("8");//default
+        
         listaAlgoritmos = new JComboBox();
         listaAlgoritmos.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"MinMax", "CorteAB","Random"}));
         listaAlgoritmos.addActionListener(new selecionaAlgoritmo());
@@ -142,7 +137,7 @@ public class VelhaInterface extends JFrame{
         painelConfiguracoes.add(iniciar);
         painelConfiguracoes.add(labelProfundidade);
         painelConfiguracoes.add(profundidadeMaxima);
-        painelConfiguracoes.add(labelTempo);
+        painelConfiguracoes.add(labelNodos);
     }
 
    /* classe para o evento que cuida do bota iniciar
@@ -157,23 +152,21 @@ public class VelhaInterface extends JFrame{
             jogadorAtual = jogoDaVelha.jogador1;// necessario pois o jogo anterior pode ter terminado no jogador 2
             jogoDaVelha.jogador1.setCor(Color.red);
             jogoDaVelha.jogador2.setCor(Color.blue);
-            jogoDaVelha.jogador1.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
-            jogoDaVelha.jogador2.minMaxAB.depth = Integer.parseInt(profundidadeMaxima.getText());
+            jogoDaVelha.jogador1.setProfundidade(Integer.parseInt(profundidadeMaxima.getText()));
+            jogoDaVelha.jogador2.setProfundidade(Integer.parseInt(profundidadeMaxima.getText()));
             long tempoInicio = System.currentTimeMillis();
             if(pcXvc.isSelected())//computador comeca jogando
             {
                 int posicao = jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos;
                 botoes[posicao].setText(""+jogadorAtual.getSimbolo());
                 botoes[posicao].setForeground(jogadorAtual.getCor());
+                labelNodos.setText("Nodos: "+jogadorAtual.getNodosAbertos());
                 jogadorAtual = jogoDaVelha.jogador2;//pc ja jogou e a vez do jogador2
             }
             if(pcXpc.isSelected())//funcao especial para 
             {
                 computadorXcomputador();
             }
-
-            tempo = (System.currentTimeMillis() - tempoInicio) / 1000;
-
         }
     }
 
@@ -214,6 +207,7 @@ public class VelhaInterface extends JFrame{
                 botaoClicado.setText("" + jogadorAtual.getSimbolo());
                 botaoClicado.setForeground(jogadorAtual.getCor());
                 jogoDaVelha.computaJogadaHumano(jogadorAtual, IDbotaoClicado);
+                labelNodos.setText("Nodos: "+jogadorAtual.getNodosAbertos());
                 if (jogoDaVelha.vencedor(jogadorAtual)) {
                     mensagemVencedor(jogadorAtual);
                     return;
@@ -227,6 +221,7 @@ public class VelhaInterface extends JFrame{
                     posicaoJogada = jogoDaVelha.fazerJogadaPC(jogadorAtual).lastPos;
                     botoes[posicaoJogada].setText("" + jogadorAtual.getSimbolo());
                     botoes[posicaoJogada].setForeground(jogadorAtual.getCor());
+                    labelNodos.setText("Nodos: "+jogadorAtual.getNodosAbertos());
                     if (jogoDaVelha.vencedor(jogadorAtual)) {
                         mensagemVencedor(jogadorAtual);
                         return;
@@ -245,6 +240,7 @@ public class VelhaInterface extends JFrame{
             //processo = null;//pronto para outro processo
             botoes[jogada].setText("" + jogadorAtual.getSimbolo());
             botoes[jogada].setForeground(jogadorAtual.getCor());
+            labelNodos.setText("Nodos: "+jogadorAtual.getNodosAbertos());
             Teste.printTable(jogoDaVelha.tabuleiro);
         }
     }
