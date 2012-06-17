@@ -62,21 +62,4 @@ public class CorteAB {
         }
         return -1;
     }
-
-
-    public static void printTree(ArrayList<ArrayList<Tabuleiro>> l){
-        for (int i = 0; i < l.size(); i++){
-            System.out.println("NIVEL "+i+":\n");
-            for (int j = 0; j < l.get(i).size(); j++){
-                Teste.printTable(l.get(i).get(j));
-            }
-        }
-    }
-    private void printSucs(ArrayList<Tabuleiro> l){
-        System.out.println("--------------------");
-        for (int i = 0; i < l.size(); i++){
-            Teste.printTable(l.get(i));
-        }
-    }
-
 }

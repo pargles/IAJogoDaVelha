@@ -241,7 +241,6 @@ public class VelhaInterface extends JFrame{
             botoes[jogada].setText("" + jogadorAtual.getSimbolo());
             botoes[jogada].setForeground(jogadorAtual.getCor());
             labelNodos.setText("Nodos: "+jogadorAtual.getNodosAbertos());
-            Teste.printTable(jogoDaVelha.tabuleiro);
         }
     }
 
