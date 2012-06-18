@@ -256,6 +256,7 @@ public class VelhaInterface extends JFrame{
         while (!jogoDaVelha.tabuleiro.tabuleiroEstaCheio()) {
             jogadorAtual = jogoDaVelha.jogador1;
             processarJogada(new JButton("vazio"), jogadorAtual);
+             jogoDaVelha.tabuleiro.printTable();
             if (jogoDaVelha.vencedor(jogadorAtual)) {
                 mensagemVencedor(jogadorAtual); return;
             }
@@ -264,6 +265,7 @@ public class VelhaInterface extends JFrame{
                 mensagemEmpate(); return;
             }
             processarJogada(new JButton("vazio"), jogadorAtual);
+             jogoDaVelha.tabuleiro.printTable();
             if (jogoDaVelha.vencedor(jogadorAtual)) {
                 mensagemVencedor(jogadorAtual);  return;
             }
